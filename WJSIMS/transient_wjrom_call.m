@@ -30,7 +30,7 @@ load(fname, 'M', 'K', 'L', 'R', 'Fv', 'Th', 'I2', 'cnum', 'MESH', ...
 mi = 1;
 %% Setup GMDOF class
 SYS = GMDOF((1:Npatches)', 6, L(1:Npatches*6, :), L(1:Npatches*6, :)');
-SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2*0, 0), sparse(2, Npatches));
+SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2, 0), sparse(2, Npatches));
 
 %% Interface Parameters
 %% Interface Parameters
