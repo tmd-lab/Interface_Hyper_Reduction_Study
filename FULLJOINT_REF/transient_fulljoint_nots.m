@@ -77,14 +77,15 @@ Z0 = Z;
 disp('INITIAL CONDITIONS SET');
 %% HHTA Hysteretic
 ABG = [0, 1/4, 1/2];  % Unconditionally Stable Newmark-Alpha
-%% ABG = [0, 1/6, 1/2];  % Implicit linear acceleration
-%% ABG = [-0.1, 1/6, 1/2];  % HHT-Alpha
+% ABG = [0, 1/6, 1/2];  % Implicit linear acceleration
+% ABG = [-0.1, 1/6, 1/2];  % HHT-Alpha
 
 T0 = 0;
 T1 = 2.5;
 dT = 2e-5;  % 5000 Hz Nyquist
 
-opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, 'Display', true, 'ITMAX', 100);
+opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
+    'Display', true, 'ITMAX', 100, 'waitbar', true);
 tic
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) MESH.CONTACTEVAL(x, z, xd, Pars, pA, L), ...
