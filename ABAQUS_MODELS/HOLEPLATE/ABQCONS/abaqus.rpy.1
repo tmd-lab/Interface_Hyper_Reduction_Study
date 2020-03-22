@@ -1,0 +1,310 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/CAE Release 2019 replay file
+# Internal Version: 2018_09_24-13.41.51 157541
+# Run by nidish on Tue Mar 17 22:23:11 2020
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=401.108306884766, 
+    height=160.477783203125)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from caeModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+openMdb(
+    pathName='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae')
+#: The model database "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae" has been opened.
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+p = mdb.models['Model-1'].Part(name='RPT', dimensionality=THREE_D, 
+    type=DEFORMABLE_BODY)
+p.ReferencePoint(point=(0.0, 0.0, 0.0))
+p = mdb.models['Model-1'].parts['RPT']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+session.viewports['Viewport: 1'].enableMultipleColors()
+session.viewports['Viewport: 1'].setColor(initialColor='#BDBDBD')
+cmap=session.viewports['Viewport: 1'].colorMappings['Set']
+session.viewports['Viewport: 1'].setColor(colorMapping=cmap)
+session.viewports['Viewport: 1'].disableMultipleColors()
+session.viewports['Viewport: 1'].enableMultipleColors()
+session.viewports['Viewport: 1'].setColor(initialColor='#BDBDBD')
+cmap=session.viewports['Viewport: 1'].colorMappings['Surface']
+session.viewports['Viewport: 1'].setColor(colorMapping=cmap)
+session.viewports['Viewport: 1'].disableMultipleColors()
+a = mdb.models['Model-1'].rootAssembly
+p = mdb.models['Model-1'].parts['RPT']
+a.Instance(name='RPT-1', part=p, dependent=ON)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+session.viewports['Viewport: 1'].view.setProjection(projection=PERSPECTIVE)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+a = mdb.models['Model-1'].rootAssembly
+a.translate(instanceList=('RPT-1', ), vector=(-0.0525, 0.0, 0.00127))
+#: The instance RPT-1 was translated by -52.5E-03, 0., 1.27E-03 with respect to the assembly coordinate system
+session.viewports['Viewport: 1'].view.setProjection(projection=PERSPECTIVE)
+a = mdb.models['Model-1'].rootAssembly
+a.LinearInstancePattern(instanceList=('RPT-1', ), direction1=(1.0, 0.0, 0.0), 
+    direction2=(0.0, 1.0, 0.0), number1=5, number2=1, spacing1=0.03, 
+    spacing2=1.0)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=0.228832, 
+    farPlane=0.301086, width=0.133235, height=0.0634241, cameraPosition=(
+    0.0696052, 0.191477, 0.170916), cameraUpVector=(-0.483796, 0.394998, 
+    -0.780973), cameraTarget=(0.00591004, -0.00308289, -0.00256044))
+a = mdb.models['Model-1'].rootAssembly
+a.translate(instanceList=('RPT-1-lin-2-1', ), vector=(-0.0075, 0.0, 0.0))
+#: The instance RPT-1-lin-2-1 was translated by -7.5E-03, 0., 0. with respect to the assembly coordinate system
+a = mdb.models['Model-1'].rootAssembly
+a.translate(instanceList=('RPT-1-lin-3-1', ), vector=(-0.0075, 0.0, 0.0))
+#: The instance RPT-1-lin-3-1 was translated by -7.5E-03, 0., 0. with respect to the assembly coordinate system
+a = mdb.models['Model-1'].rootAssembly
+a.translate(instanceList=('RPT-1-lin-4-1', ), vector=(-0.0075, 0.0, 0.0))
+#: The instance RPT-1-lin-4-1 was translated by -7.5E-03, 0., 0. with respect to the assembly coordinate system
+a = mdb.models['Model-1'].rootAssembly
+a.translate(instanceList=('RPT-1-lin-5-1', ), vector=(-0.015, 0.0, 0.0))
+#: The instance RPT-1-lin-5-1 was translated by -15.E-03, 0., 0. with respect to the assembly coordinate system
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.models['Model-1'].rootAssembly.features.changeKey(fromName='RPT-1-lin-2-1', 
+    toName='RPT-2')
+mdb.models['Model-1'].rootAssembly.features.changeKey(fromName='RPT-1-lin-3-1', 
+    toName='RPT-3')
+mdb.models['Model-1'].rootAssembly.features.changeKey(fromName='RPT-1-lin-4-1', 
+    toName='RPT-4')
+mdb.models['Model-1'].rootAssembly.features.changeKey(fromName='RPT-1-lin-5-1', 
+    toName='RPT-5')
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: The job input file "Job-1.inp" has been submitted for analysis.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Error in job Job-1: Abaqus/Standard Analysis exited with an error - Please see the  message file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+o3 = session.openOdb(
+    name='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-1.odb')
+#: Model: /home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-1.odb
+#: Number of Assemblies:         1
+#: Number of Assembly instances: 0
+#: Number of Part instances:     1
+#: Number of Meshes:             1
+#: Number of Element Sets:       21
+#: Number of Node Sets:          6
+#: Number of Steps:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=2 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=3 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=4 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=5 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=6 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=7 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=8 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=9 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=10 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=0 )
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=ON, 
+    constraints=ON, connectors=ON, engineeringFeatures=ON)
+p = mdb.models['Model-1'].parts['RPT']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+p = mdb.models['Model-1'].parts['RPT']
+r = p.referencePoints
+refPoints=(r[1], )
+p.Set(referencePoints=refPoints, name='Set-1')
+#: The set 'Set-1' has been created (1 reference point).
+a = mdb.models['Model-1'].rootAssembly
+a.regenerate()
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+a = mdb.models['Model-1'].rootAssembly
+region1=a.instances['RPT-1'].sets['Set-1']
+a = mdb.models['Model-1'].rootAssembly
+region2=a.instances['Part-1-1'].surfaces['S1']
+mdb.models['Model-1'].Coupling(name='Constraint-1', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)
+cliCommand("""mdb.models['Model-1'].Coupling(name='Constraint-1', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)""")
+#* NameError: name 'region1' is not defined
+cliCommand("""mdl = mdb.models['Model-1']""")
+cliCommand("""ras = mdl.rootAssembly""")
+cliCommand("""mdb.models['Model-1'].Coupling(name='Constraint-1', controlPoint=ras.instances['RPT-1'].sets['Set-1'], 
+
+);""")
+#* TypeError: not all required arguments specified; expected 5, got 2
+a = mdb.models['Model-1'].rootAssembly
+region1=a.instances['RPT-2'].sets['Set-1']
+a = mdb.models['Model-1'].rootAssembly
+region2=a.instances['Part-1-1'].surfaces['S2']
+mdb.models['Model-1'].Coupling(name='Constraint-2', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)
+a = mdb.models['Model-1'].rootAssembly
+region1=a.instances['RPT-3'].sets['Set-1']
+a = mdb.models['Model-1'].rootAssembly
+region2=a.instances['Part-1-1'].surfaces['S3']
+mdb.models['Model-1'].Coupling(name='Constraint-3', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)
+a = mdb.models['Model-1'].rootAssembly
+region1=a.instances['RPT-4'].sets['Set-1']
+a = mdb.models['Model-1'].rootAssembly
+region2=a.instances['Part-1-1'].surfaces['S4']
+mdb.models['Model-1'].Coupling(name='Constraint-4', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)
+a = mdb.models['Model-1'].rootAssembly
+region1=a.instances['RPT-5'].sets['Set-1']
+a = mdb.models['Model-1'].rootAssembly
+region2=a.instances['Part-1-1'].surfaces['S5']
+mdb.models['Model-1'].Coupling(name='Constraint-5', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=STRUCTURAL, 
+    weightingMethod=UNIFORM, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, 
+    ur2=ON, ur3=ON)
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=OFF, 
+    constraints=OFF, connectors=OFF, engineeringFeatures=OFF)
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-1.odb'])
+o3 = session.openOdb(
+    name='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-1.odb')
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=1 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=2 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=3 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=4 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=5 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=6 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=7 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=8 )
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+mdb.Job(name='Job-2', model='Model-1', description='', type=ANALYSIS, 
+    atTime=None, waitMinutes=0, waitHours=0, queue=None, memory=90, 
+    memoryUnits=PERCENTAGE, getMemoryFromAnalysis=True, 
+    explicitPrecision=SINGLE, nodalOutputPrecision=SINGLE, echoPrint=OFF, 
+    modelPrint=OFF, contactPrint=OFF, historyPrint=OFF, userSubroutine='', 
+    scratch='', resultsFormat=ODB, multiprocessingMode=DEFAULT, numCpus=1, 
+    numGPUs=0)
+mdb.jobs['Job-2'].submit(consistencyChecking=OFF)
+#: The job input file "Job-2.inp" has been submitted for analysis.
+#: Job Job-2: Analysis Input File Processor completed successfully.
+#: Job Job-2: Abaqus/Standard completed successfully.
+#: Error in job Job-2: Abaqus/Standard Analysis exited with an error - Please see the  message file for possible error messages if the file exists.
+#: Job Job-2 aborted due to errors.
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-1.odb'])
+o3 = session.openOdb(
+    name='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb')
+#: Model: /home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb
+#: Number of Assemblies:         1
+#: Number of Assembly instances: 0
+#: Number of Part instances:     1
+#: Number of Meshes:             1
+#: Number of Element Sets:       21
+#: Number of Node Sets:          21
+#: Number of Steps:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=2 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=3 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=4 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=5 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=6 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=7 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=8 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=9 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=10 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=11 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=12 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=11 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=10 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=9 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=8 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=7 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=6 )
+session.viewports['Viewport: 1'].odbDisplay.setFrame(step=0, frame=5 )
+odb = session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb']
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=((
+    'U', NODAL), ), nodeSets=("ASSEMBLY_CONSTRAINT-1_REFERENCE_POINT", ))
+xyp = session.XYPlot('XYPlot-1')
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+curveList = session.curveSet(xyData=xyList)
+chart.setValues(curvesToPlot=curveList)
+session.viewports['Viewport: 1'].setValues(displayedObject=xyp)
+odb = session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb']
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=((
+    'U', NODAL), ), nodeSets=("ASSEMBLY_CONSTRAINT-2_REFERENCE_POINT", ))
+xyp = session.xyPlots['XYPlot-1']
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+curveList = session.curveSet(xyData=xyList)
+chart.setValues(curvesToPlot=curveList)
+odb = session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb']
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=((
+    'U', NODAL), ), nodeSets=("ASSEMBLY_CONSTRAINT-3_REFERENCE_POINT", ))
+xyp = session.xyPlots['XYPlot-1']
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+curveList = session.curveSet(xyData=xyList)
+chart.setValues(curvesToPlot=curveList)
+odb = session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb']
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=((
+    'U', NODAL), ), nodeSets=("ASSEMBLY_CONSTRAINT-4_REFERENCE_POINT", ))
+xyp = session.xyPlots['XYPlot-1']
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+curveList = session.curveSet(xyData=xyList)
+chart.setValues(curvesToPlot=curveList)
+odb = session.odbs['/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/Job-2.odb']
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=NODAL, variable=((
+    'UR', NODAL), ), nodeSets=("ASSEMBLY_CONSTRAINT-1_REFERENCE_POINT", ))
+xyp = session.xyPlots['XYPlot-1']
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+curveList = session.curveSet(xyData=xyList)
+chart.setValues(curvesToPlot=curveList)
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/ABQCONS/HOLEPLATE_ABQC.cae".

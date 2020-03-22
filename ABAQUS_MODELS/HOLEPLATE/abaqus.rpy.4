@@ -1,0 +1,60 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/CAE Release 2019 replay file
+# Internal Version: 2018_09_24-13.41.51 157541
+# Run by nidish on Tue Mar 17 14:47:08 2020
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=401.108306884766, 
+    height=160.477783203125)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from caeModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+openMdb(
+    pathName='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/HOLEPLATE.cae')
+#: The model database "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/HOLEPLATE.cae" has been opened.
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+session.viewports['Viewport: 1'].partDisplay.setValues(mesh=ON)
+session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=OFF)
+p = mdb.models['Model-1'].parts['Part-1']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#101 ]', ), )
+p.deleteMesh(regions=pickedRegions)
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#0 #2 ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=3, constraint=FINER)
+p = mdb.models['Model-1'].parts['Part-1']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#4 ]', ), )
+p.deleteMesh(regions=pickedRegions)
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#4000 ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=4, constraint=FINER)
+p = mdb.models['Model-1'].parts['Part-1']
+p.generateMesh()
+mdb.save()
+#: The model database has been saved to "/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/HOLEPLATE.cae".
+a = mdb.models['Model-1'].rootAssembly
+a.regenerate()
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+mdb.jobs['Job-1'].writeInput(consistencyChecking=OFF)
+#: The job input file has been written to "Job-1.inp".

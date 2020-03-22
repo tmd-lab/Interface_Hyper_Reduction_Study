@@ -10,13 +10,13 @@ addpath('../ROUTINES/QSHMA/')
 % sel_method = 'P';
 % Nels = 52;  % [52 100 140 204 240 304]
 
-sel_method = 'U';
-Nels = 568; % [36 74 122 232 448 568 588]
+% sel_method = 'U';
+% Nels = 568; % [36 74 122 232 448 568 588]
 % for Nels=[36 74 122 232 448 568 588]
 
-% sel_method = 'PD';
+sel_method = 'PD';
 % Nels = 252;  % [48 108 152 200 252 292]
-
+for Nels=[68]
 % FRICTMODEL STUDY
 % sel_method = 'PD';
 % Nels = 68;
@@ -87,6 +87,12 @@ Pstat = reshape([Tx Ty Tn]', [No*No*MESH.Ne*3 1]);
 %% Plot prestress tractions
 figure(Nels);
 clf()
+if isempty(MESH.Tri)
+    MESH.Tri = zeros(0, 4);
+end
+if isempty(ref.MESH.Tri)
+    ref.MESH.Tri = zeros(0, 4);
+end
 SHOW2DMESH(MESH.Nds+[0 0.02], MESH.Tri, MESH.Quad, Qm\Tn, -1, -100);
 SHOW2DMESH(ref.MESH.Nds-[0 0.02], ref.MESH.Tri, ref.MESH.Quad, ref.Qm\ref.Tn, -1, -100); 
 yy = colorbar('southoutside');
@@ -130,6 +136,7 @@ MESH.dpn = 3;
 QuadMatsGen.Q = kron(Qm, eye(3));
 QuadMatsGen.T = kron(Tm, eye(3));
 
+tic
 opt = optimoptions('fsolve', 'Display', 'off', 'SpecifyObjectiveGradient', true);
 for k=1:length(QS)
 %     [HYSTS{k}, BBS{k}, ULS{k}, RLS{k}] = GENSTEPPED_HYSTERETICNMA(NLRESIDFUNC, ...
@@ -162,8 +169,9 @@ for k=1:length(QS)
     
     fprintf('Done %d/%d: (%e; %.2f; %e; %e)\n', k, length(QS), QS(k), WS(k)/(2*pi), ZS(k), ZSM(k));    
 end
+ttk = toc
 
-save(sprintf('./DATS/RUN_M%d_%s_%dELS.mat',mi,sel_method,Nels), 'HYSTS', 'BBS', 'ULS', 'RLS', 'RS', 'QS', 'WS', 'ZS', 'DS', 'DSM', 'ZSM', 'Tx', 'Ty', 'Tn', 'Xstat')
+save(sprintf('./DATS/RUN_M%d_%s_%dELS.mat',mi,sel_method,Nels), 'HYSTS', 'BBS', 'ULS', 'RLS', 'RS', 'QS', 'WS', 'ZS', 'DS', 'DSM', 'ZSM', 'Tx', 'Ty', 'Tn', 'Xstat', 'ttk')
 %% Plot Backbone
 figure(30)
 clf()
@@ -184,3 +192,4 @@ ylabel('Effective Damping Factor')
 
 gong = load('gong.mat');
 sound(gong.y)
+end

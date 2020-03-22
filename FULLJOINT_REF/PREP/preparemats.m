@@ -54,5 +54,5 @@ R = Rrel*L;
 Fv = L'*Fvrel;
 disp('Rigid Body Modes Null-Space Transformed out.')
     
-save(sprintf('./%d_SET_NULLRED.mat', setid), 'M', 'K', 'R', 'L', 'T', 'Fv', 'MESH', 'Krel', 'Fvrel');
+save(sprintf('./%d_SET_NULLRED.mat', setid), 'M', 'K', 'R', 'L', 'T', 'Fv', 'MESH', 'Mrel', 'Krel', 'Fvrel', 'Rrel');
 % save('tmp.mat', 'M', 'K', 'R', 'L', 'Fv', 'MESH')

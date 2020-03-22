@@ -49,6 +49,12 @@ function [R, dRdX, dRdq, varargout] = WJRES_RQNM(X, pars, prev, K, M, Xstat, dXs
         2*(RX(1:end-2)-Xstat)'*M, 0];
     dRdq = [zeros(length(RX)-2,1); -2*q];
     
+%     R = [K*RX(1:end-2) + Fnl - Fs - lam*M*(RX(1:end-2)-Xstat);
+%         (RX(1:end-2)-Xstat)'*(K*RX(1:end-2) + Fnl - Fs) - lam*q^2];
+%     dRdX = [(K - lam*M + dFnl).*RCvec(1:end-2), -M*(RX(1:end-2)-Xstat);
+%         RX(1:end-2)'*K+Fnl'-Fs'+(RX(1:end-2)-Xstat)'*(K+dFnl), -q^2];
+%     dRdq = [zeros(length(RX)-2,1); -2*lam*q];
+    
 	if nargin>=15
         R = varargin{2}.*R;
         dRdX = varargin{2}.*dRdX;

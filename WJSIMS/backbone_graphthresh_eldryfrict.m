@@ -3,6 +3,7 @@ clear all
 addpath('../ROUTINES/')
 addpath('../ROUTINES/FEM/')
 addpath('../ROUTINES/IWAN/')
+addpath('../ROUTINES/WJSIMS')
 
 % 5 Patches
 setid = 5;
@@ -12,8 +13,8 @@ fname = sprintf('../WHOLEJOINT_ROM_PREPARE/REDMATS/%d_SET_WJMAT.mat', setid);
 Prestress = 11580; 
 sint = 1e-6; 
 
-sel_method = 'U' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
-Nlev = 21;
+sel_method = 'U' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3,5,7,9,11,19,21,25,30,35,40)
+Nlev = 3;
 
 fname = sprintf('../WHOLEJOINT_ROM_PREPARE/REDMATS/P%d_S%.2f_%s_%dLEV_GRED_WJMAT.mat',Prestress, log10(sint), sel_method, Nlev);
 
@@ -27,13 +28,13 @@ Txyn = LamT(:, reshape(((1:Npatches)-1)*6+(1:3)', Npatches*3, 1));
 
 copt.lspci = [2 3];  % [Kt Kn]  log scale
 
-copt.x.T{1} = [ones(Npatches,1) zeros(Npatches, 2)];  % Fs
+copt.x.T{1} = [ones(Npatches,1) zeros(Npatches, 2)];  % mu
 copt.x.T{2} = [zeros(Npatches,1) PatchAreas' zeros(Npatches, 1)];  % Kt
 
-copt.y.T{1} = [ones(Npatches,1) zeros(Npatches, 2)];  % Fs
+copt.y.T{1} = [ones(Npatches,1) zeros(Npatches, 2)];  % mu
 copt.y.T{2} = [zeros(Npatches,1) PatchAreas' zeros(Npatches, 1)];  % Kt
 
-copt.n.T{1} = [zeros(Npatches, 2) PatchAreas'];  % Fs
+copt.n.T{1} = [zeros(Npatches, 2) PatchAreas'];  % Kn
 
 % CFUN = @(uxyn, pars) SPRING_JENKINS(uxyn, pars, copt);
 % CFUN = @(uxyn, pars) PENALTY_JENKINS(uxyn, pars, copt);
@@ -42,17 +43,20 @@ CFUN = @(uxyn, pars) PENALTY_ELDRYFRICT(uxyn, pars, copt);
 % DFUN = @(uxyn, pars) PENALTY_IWAN4_DISS(uxyn, pars, copt);
 
 %% Contact Model Parameters
+mu = 0.20;
+c = 1.0;
+
 nu = 0.29;
 Aint = sum(PatchAreas);
 Pint = Prestress*3/Aint;
-sint = 1e-6;
+sint = 1e-6*c;
 chi = 2.0;
 ktkn = chi*(1-nu)/(2-nu);
 kt = 4*(1-nu)*Pint/(sqrt(pi)*(2-nu)*sint);
 kn = kt/ktkn;
 
 % pars = log10([0.20*Pint; kt; kn]);  % [Fs Kt Kn]
-pars = [0.20; log10([kt; kn])];
+pars = [mu; log10([kt; kn])];
 %%
 % pars = [5.0; 15; 12];
 lpars = pars; lpars(copt.lspci) = 10.^(lpars(copt.lspci)); 
@@ -86,7 +90,7 @@ Vst = Vst./sqrt(diag(Vst'*M*Vst)');
 
 % exx = load('../EXPERIMENTAL_DATA/EXP_14Mar2019.mat');
 % Nx = 20; iNs = fix(linspace(1, length(exx.Q), Nx));
-% expdat.Q = exx.Q(iNs)/abs(R(3,:)*Vst(:,mi));
+% expdat.Q = exx.Q(iN   s)/abs(R(3,:)*Vst(:,mi));
 % expdat.W = exx.W(iNs)*2*pi;
 % expdat.Z = exx.Z(iNs);
 % expdat.D = exx.D(iNs);
@@ -105,11 +109,11 @@ opt.MaxIterations = 1000;
 
 Nqp = 20;
 tic
-[eobj, dedp, BB] = WJMODEL_BBFUN(pars, 1, expdat, K, M, X0, Fv*Prestress, L, Txyn, Qxyn, CFUN, Npatches, Nqp, opt);
+[eobj, dedp, BB] = WJMODEL_BBFUN(pars, 1, expdat, K, M, R, X0, Fv*Prestress, L, Txyn, Qxyn, CFUN, Npatches, Nqp, opt);
 % [eobj, dedp, BB] = WJMODEL_BBFUN_MASING(pars, 1, expdat, K, M, X0, Fv*Prestress, L, Txyn, Qxyn, CFUN, DFUN, Npatches, opt);
 ttk = toc
 
-save(sprintf('./DATS/P%d_S%.2f_%s_%dLEV_BB_ELDRYFRICT.mat',Prestress,log10(sint),sel_method,Nlev), 'BB', 'ttk', 'Pxyn', 'MESH', 'Pels');
+% save(sprintf('./DATS/P%d_S%.2f_%s_%dLEV_BB_ELDRYFRICT.mat',Prestress,log10(sint),sel_method,Nlev), 'BB', 'ttk', 'Pxyn', 'MESH', 'Pels');
 
 %% Plotting
 
@@ -124,4 +128,5 @@ loglog(BB.Q, BB.Z, '.-'); hold on;
 semilogx(expdat.Q, expdat.ZM, 'ko-');
 % loglog(BB.Q, BB.D, '.-', expdat.Q, expdat.D, 'k-')
 % xlim([1e-6 1e-2])
+ylim([1e-5 1e0])
 disp('Done')

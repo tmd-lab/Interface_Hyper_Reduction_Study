@@ -17,10 +17,11 @@ R = R';
 fname = sprintf('./MATS/%d_SET_NULLRED.mat', setid);
 load(fname, 'MESH')
 [Q1, T1] = ZTE_ND2QP(MESH, 1);
+[Q3, T3] = ZTE_ND2QP(MESH, 3);
 EAreas = sum(T1,1);
 
 %% Parameters
-Nlevs = 21;  % [3 , 5 , 7, 9, 11, 19, 21]
+Nlevs = 50;  % [3 , 5 , 7, 9, 11, 19, 21, 25, 30, 40]
 sel_method = 'U';
 
 %% Processing for METIS
@@ -45,7 +46,7 @@ sel_method = 'U';
 % % Call Metis
 % system(sprintf('cd DATS; gpmetis -contig brb_graph.mti %d > /dev/null', ...
 %                Nlevs));
-% %% Collect Data
+% %% Collect DataSHOW2DMESH(MESH.Nds, [], [(1:length(Pels{n}))' MESH.Quad(Pels{n},2:end)], n, -1, -100, MESH.Ne)
 % metisret = dlmread(sprintf('./DATS/brb_graph.mti.part.%d', Nlevs));
 %
 % Pnds = cell(Nlevs, 1);
@@ -93,6 +94,7 @@ Prestress = 11580; sint = 1e-6;
 Area = cell(1, Npatches);
 qps = cell(1, Npatches);
 ctrds = zeros(Npatches, 2);
+I2 = zeros(4, Npatches);  % Ixx, Ixy, Iyy, Izz
 
 figure(1)
 clf()
@@ -101,16 +103,22 @@ for n=1:Npatches
     qps{n} = Q1(Pels{n}, :)*MESH.Nds;
     ctrds(n, :) = sum(Area{n}.*MESH.Nds(Pnds{n}, :))/sum(Area{n});
     
-    k=n;SHOW2DMESH(MESH.Nds, [], MESH.Quad(Pels{k},:), k, -1, -100)
+    qids = reshape((Pels{n}-1)'*9+(1:9)', [], 1);
+    I2(1,n) = sum(T3(:, qids)*(Q3(qids,:)*MESH.Nds(:,2)-ctrds(n,2)).^2);  % Ixx
+    I2(2,n) = -sum(T3(:, qids)*prod(Q3(qids,:)*MESH.Nds-ctrds(n,:), 2));  % Ixy
+    I2(3,n) = sum(T3(:, qids)*(Q3(qids,:)*MESH.Nds(:,1)-ctrds(n,1)).^2);  % Iyy
+    I2(4,n) = sum(T3(:, qids)*sum((Q3(qids,:)*MESH.Nds-ctrds(n,:)).^2, 2));  % Izz
+    
+    SHOW2DMESH(MESH.Nds, [], [(1:length(Pels{n}))' MESH.Quad(Pels{n},2:end)], n, -1, -100, MESH.Ne)
 end
 PatchAreas = cellfun(@(c) sum(c), Area);
 axis equal; axis off; colormap(jet(Npatches));
 colormap(prism)
 title(sprintf('%d Patches',Npatches))
 set(gca, 'Position', [-0.5 -0.1 2 1])
-print(sprintf('./FIGS/P%d_S%.2f_%s_%dLEV_%dPATCH_MESH.eps',Prestress, log10(sint), sel_method, Nlevs,Npatches), '-depsc')
+% print(sprintf('./FIGS/P%d_S%.2f_%s_%dLEV_%dPATCH_MESH.eps',Prestress, log10(sint), sel_method, Nlevs,Npatches), '-depsc')
 pause(1)
-
+% return
 %% Relative Coordinate Transformation: [XT-XB; XB; eta]
 % Ngen = Ngens(setid) + length(K)-Ngens(setid)-MESH.Nn*3*2;
 Ngen = length(K) - MESH.Nn*3*2;
@@ -193,5 +201,5 @@ disp(cnum)
 % [Dred Drel(7:end)]
 %% Save
 fname = sprintf('./REDMATS/P%d_S%.2f_%s_%dLEV_GRED_WJMAT.mat', Prestress, log10(sint), sel_method, Nlevs);
-save(fname, 'M', 'K', 'L', 'Fv', 'R', 'Th', 'LamT', 'MESH', 'PatchAreas', 'Npatches', 'dofred', 'NTN', 'GTG', 'NTG', 'cnum', 'Pels', 'Pnds')
+save(fname, 'M', 'K', 'L', 'Fv', 'R', 'Th', 'I2', 'LamT', 'MESH', 'PatchAreas', 'Npatches', 'dofred', 'NTN', 'GTG', 'NTG', 'cnum', 'Pels', 'Pnds')
 disp('SAVED!')

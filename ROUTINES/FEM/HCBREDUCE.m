@@ -49,8 +49,8 @@ function [Mr,Kr,TFM] = HCBREDUCE(M,K,bdofs,ncomp, varargin)
     Mcc = Mbb+Mbi*PhiC+PhiC'*Mbi'+PhiC'*Mii*PhiC;
     Mcn = (Mbi+PhiC'*Mii)*PhiN;
   
-    Mr = [Mcc Mcn; Mcn' eye(ncomp)];%PhiN'*Mii*PhiN];
-    Kr = [Kbb+Kbi*PhiC zeros(size(Mcn)); 
+    Mr = [0.5*(Mcc+Mcc') Mcn; Mcn' eye(ncomp)];%PhiN'*Mii*PhiN];
+    Kr = [Kbb+0.5*(Kbi*PhiC+PhiC'*Kbi') zeros(size(Mcn)); 
         zeros(size(Mcn')) diag(Dfb)];%PhiN'*Kii*PhiN];
     TFM = sparse([eye(length(bdofs)) zeros(length(bdofs),ncomp);
            PhiC PhiN]);

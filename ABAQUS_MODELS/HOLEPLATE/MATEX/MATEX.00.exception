@@ -1,0 +1,39 @@
+<Description>
+      ABAQUS/pre rank 0 encountered a SEGMENTATION VIOLATION referencing location 0x18
+</Description>
+
+<Callstack>
+   1) libABQSMABasShared.so      ! inline @ 0x00001950d26d
+   2) libpthread.so.0            ! inline @ 0x00001537d890
+   3) libABQSMAAncAdbModule.so   ! adb_elemaccessbasic_
+   4) libABQSMAPreCore.so        ! inline @ 0x000025789bba
+   5) libABQSMAPreCore.so        ! smapre_efxref_
+   6) libABQSMAPreCore.so        ! bulk_
+   7) libABQSMAPreCore.so        ! inline @ 0x000025eb44ff
+   8) libABQSMAPreCore.so        ! pre_main
+   9) pre                        ! ABQmain
+  10) pre                        ! main
+</Callstack>
+
+<Memory>
+   <Current>            3271 MB </Current>
+   <Physical>          16384 MB </Physical>
+   <Limit>             10485 MB </Limit>
+   <Virtual>        33554431 MB </Virtual>
+   <Accessible>        16384 MB </Accessible>
+   <Allocator>            DL    </Allocator>
+</Memory>
+
+<Directories>
+  <current> /home/nidish/Software/Abaqus2019/tmp/nidish_MATEX_16602 </current> 
+    <indir> /home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/MATEX </indir> 
+   <outdir> /home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/HOLEPLATE/MATEX </outdir>
+   <tmpdir> /home/nidish/Software/Abaqus2019/tmp/nidish_MATEX_16602 </tmpdir>
+</Directories>
+
+<Installation>
+     <Version> 3DEXPERIENCE R2019x 6.19-1 </Version>
+       <Build>   2018_09_24-13.41.51 157541 </Build>
+  <Executable> /home/nidish/Software/Abaqus2019/DassaultSystemes/SimulationServices/V6R2019x/linux_a64/code/bin/pre </Executable>
+</Installation>
+

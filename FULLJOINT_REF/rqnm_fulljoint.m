@@ -14,7 +14,7 @@ Prestress = 11580;
 mi = 1;  % Mode of interest
 [Q1,T1] = ZTE_ND2QP(MESH,1);
 
-% %% Detect Holts
+% %% Detect Bolts
 % [~,MESH.Ndbs] = CreateBRBInterface(MESH.Nds(:,1), MESH.Nds(:,2));
 % MESH.Pstiff = 1e12;
 % MESH.clrn = 1e-4;
@@ -28,7 +28,7 @@ mi = 1;  % Mode of interest
 % K = K + L'*Kpin*L;
 %% Interface Parameters
 mu = 0.20;  %% Unknown parameters
-c = 1.0; 
+c = 1.0;
 
 nu   = 0.29;                % Poisson's ratio
 Aint = sum(sum(T1));      % Average interface area (lumped)
@@ -144,7 +144,7 @@ for k=1:length(QS)
     fprintf('Done %d/%d: (%e; %.2f; %e; %e)\n', k, length(QS), QS(k), WS(k)/(2*pi), ZS(k), ZSM(k));    
 end
 
-save('./DATS/RUNS.mat', 'HYSTS', 'BBS', 'ULS', 'RLS', 'RS', 'QS', 'WS', 'ZS', 'DS', 'DSM', 'ZSM')
+% save('./DATS/RUNS.mat', 'HYSTS', 'BBS', 'ULS', 'RLS', 'RS', 'QS', 'WS', 'ZS', 'DS', 'DSM', 'ZSM')
 
 %% Plot Backbone
 figure(10)

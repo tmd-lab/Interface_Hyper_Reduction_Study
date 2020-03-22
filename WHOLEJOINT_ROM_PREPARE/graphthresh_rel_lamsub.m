@@ -27,7 +27,7 @@ Pobj = Q1*(dat.Qm\dat.Tn);
 % Pobj = (Pobj-min(Pobj))/range(Pobj);
 
 % 2(3), 4(11), 5(13), 7(21)
-Nlevs = 8;  % 2(3), 3(5), 5(9), 8(15)
+Nlevs = 2;  % 2(3), 3(5), 5(9), 8(15)
 Plevels = linspace(min(Pobj), max(Pobj), Nlevs+1); Plevels(1)=[];
 LevelIs = cell(Nlevs,1);
 AdjMxs = cell(Nlevs,1);
@@ -149,11 +149,14 @@ Lamhcb = Thcb'*LamTa;
 disp('DONE!')
 
 %% NULL-SPACE REDUCTION
-[Vhcb, Dhcb] = eig(full(Khcb(Npatches*3+1:end, Npatches*3+1:end)), full(Mhcb(Npatches*3+1:end, Npatches*3+1:end))); 
-% [Vhcb, Dhcb] = eig(full(Khcb), full(Mhcb)); 
+% [Vhcb, Dhcb] = eig(full(Khcb(Npatches*3+1:end, Npatches*3+1:end)), full(Mhcb(Npatches*3+1:end, Npatches*3+1:end))); 
+% [Dhcb, si] = sort(diag(Dhcb));  Vhcb = Vhcb(:, si);
+% Vrbms = [zeros(Npatches*3, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
+% L = null(Vrbms'*Mhcb);
+
+[Vhcb, Dhcb] = eig(full(Khcb(Npatches*6+1:end, Npatches*6+1:end)), full(Mhcb(Npatches*6+1:end, Npatches*6+1:end)));
 [Dhcb, si] = sort(diag(Dhcb));  Vhcb = Vhcb(:, si);
-% Vrbms = Vhcb(:, 1:6);
-Vrbms = [zeros(Npatches*3, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
+Vrbms = [zeros(Npatches*6, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
 L = null(Vrbms'*Mhcb);
 
 M = L'*Mhcb*L;
@@ -173,5 +176,5 @@ Drel = eigs(Krel, Mrel, 16, 'SM');
 [Dred Drel(7:end)]
 %% Save
 fname = sprintf('./REDMATS/P%d_S%.2f_%dLEV_GRED_WJMAT.mat', Prestress, log10(sint), Nlevs);
-save(fname, 'M', 'K', 'L', 'Fv', 'R', 'Th', 'LamT', 'MESH', 'PatchAreas', 'Npatches', 'dofred', 'NTN', 'GTG', 'NTG', 'cnum', 'Pels', 'Pnds')
+% save(fname, 'M', 'K', 'L', 'Fv', 'R', 'Th', 'LamT', 'MESH', 'PatchAreas', 'Npatches', 'dofred', 'NTN', 'GTG', 'NTG', 'cnum', 'Pels', 'Pnds')
 disp('SAVED!')

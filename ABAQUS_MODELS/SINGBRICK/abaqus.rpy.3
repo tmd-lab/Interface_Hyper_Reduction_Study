@@ -1,0 +1,84 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/CAE Release 2019 replay file
+# Internal Version: 2018_09_24-13.41.51 157541
+# Run by nidish on Wed Mar 18 09:52:14 2020
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=401.108306884766, 
+    height=160.477783203125)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from caeModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+mdb.ModelFromInputFile(name='singbrick', 
+    inputFileName='/home/nidish/Documents/Academics/RESEARCH/INTRED_STUDY/ABAQUS_MODELS/SINGBRICK/singbrick.inp')
+#: The model "singbrick" has been created.
+#: The part "PART-1" has been imported from the input file.
+#: 
+#: WARNING: The following keywords/parameters are not yet supported by the input file reader:
+#: ---------------------------------------------------------------------------------
+#: *MATRIXGENERATE
+#: *MATRIXOUTPUT
+#: *PREPRINT
+#: The model "singbrick" has been imported from an input file. 
+#: Please scroll up to check for error and warning messages.
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+a = mdb.models['singbrick'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    nodeLabels=ON)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.45994, 
+    farPlane=9.28024, width=5.36932, height=2.56215, cameraPosition=(6.07138, 
+    0.363096, 4.09575), cameraUpVector=(-0.395638, 0.912004, -0.108257), 
+    cameraTarget=(-0.00320356, -0.0791157, 0.0406877))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.53147, 
+    farPlane=9.22009, width=5.43967, height=2.59571, cameraPosition=(6.35947, 
+    -0.18856, 3.65292), cameraUpVector=(0.0560495, 0.654322, -0.754136), 
+    cameraTarget=(-0.00113128, -0.0830836, 0.0375024))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.24637, 
+    farPlane=9.62448, width=5.1593, height=2.46193, cameraPosition=(4.01308, 
+    -5.05716, 3.63149), cameraUpVector=(0.58433, 0.75501, -0.29752), 
+    cameraTarget=(-0.0198048, -0.12183, 0.0373319))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.46212, 
+    farPlane=9.3066, width=5.37147, height=2.56317, cameraPosition=(6.54071, 
+    1.10149, 3.15371), cameraUpVector=(-0.425336, 0.880313, -0.21009), 
+    cameraTarget=(0.020427, -0.0238037, 0.0297271))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.29189, 
+    farPlane=9.46513, width=5.20407, height=2.48329, cameraPosition=(5.82009, 
+    2.15143, 3.92743), cameraUpVector=(-0.474563, 0.801149, -0.364624), 
+    cameraTarget=(0.0138612, -0.0142373, 0.0367767))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.50056, 
+    farPlane=9.26236, width=5.40928, height=2.58121, cameraPosition=(6.63505, 
+    0.782665, -3.04382), cameraUpVector=(-0.443353, 0.893155, 0.075579), 
+    cameraTarget=(0.0206461, -0.0256329, -0.0212619))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.29673, 
+    farPlane=9.43405, width=5.20883, height=2.48556, cameraPosition=(5.85581, 
+    3.98614, -1.89275), cameraUpVector=(-0.70931, 0.601497, 0.367533), 
+    cameraTarget=(0.0138493, 0.00230872, -0.011222))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.31135, 
+    farPlane=9.41943, width=5.22321, height=2.49242, cameraPosition=(5.85581, 
+    3.98614, -1.89275), cameraUpVector=(-0.824972, 0.559372, -0.0807786), 
+    cameraTarget=(0.0138493, 0.00230871, -0.0112219))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.44709, 
+    farPlane=9.28118, width=5.3567, height=2.55612, cameraPosition=(5.79478, 
+    4.46652, 0.467573), cameraUpVector=(-0.78306, 0.505679, -0.362086), 
+    cameraTarget=(0.013449, 0.00545997, 0.00426158))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=5.22282, 
+    farPlane=9.4935, width=5.13615, height=2.45088, cameraPosition=(3.13674, 
+    3.4443, -5.67481), cameraUpVector=(-0.63863, 0.620085, 0.455683), 
+    cameraTarget=(-0.00353737, -0.00107261, -0.0349918))

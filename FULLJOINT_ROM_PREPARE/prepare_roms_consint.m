@@ -17,11 +17,13 @@ setid = 5;  % To call SETDIRS
 % Nels = 588; % [36 74 122 232 448 568 588]
 
 % sel_method = 'PD';
-% Nels = 152;  % [48 108 152 200 252 292]
+% Nels = 152;  % [48 68 108 152 200 252 292]
 
-% FRICTMODEL STUDY
 sel_method = 'PD';
-Nels = 68;
+for Nels = [68]
+% % FRICTMODEL STUDY
+% sel_method = 'PD';
+% Nels = 68;
 %% Mesh Extract
 % MESH.Nds     = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Nodes.dat');
 % MESH.Quad    = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Elements.dat');
@@ -46,6 +48,7 @@ K = sparse(K); K = 0.5*(K+K');
 Nrest = size(M, 1)-Nint*3*2;
 disp('Matrices Extracted.');
 
+tic
 %% Relative Transformation : [Xt-Xb; Xb; Xi..]
 Trel = sparse([eye(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
                zeros(Nint*3), eye(Nint*3), zeros(Nint*3, Nrest);
@@ -93,7 +96,7 @@ Mhcb = 0.5*(Mhcb+Mhcb');  Khcb = 0.5*(Khcb+Khcb');
 Rhcb = Rred*Thcb;
 Fvhcb = Thcb'*Fvred;
 TFMfhcb = [Thcb(1:red.MESH.Nn*3,:)'*TFMf, zeros(size(Mhcb,1),Nrest)];
-
+TFMhcb = TFM*Thcb;
 %% Null Space Reduction
 [V, D] = eigs(Khcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), Mhcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), 10, 'SM');
 [D,si] = sort(sqrt(abs(diag(D)))/(2*pi));
@@ -105,9 +108,12 @@ M = L'*Mhcb*L;  M = 0.5*(M+M');
 K = L'*Khcb*L;  K = 0.5*(K+K');
 R = Rhcb*L;
 Fv = L'*Fvhcb;
+TFMh = TFMhcb*L;
 TFMf = L'*TFMfhcb;
 MESH = red.MESH;
+ttk = toc
 
 % save(sprintf('ROM_20Nm_PMESHZT_%d.mat',Nels), 'M', 'K', 'R', 'L', 'Fv', 'TFMf', 'TFMfhcb', 'MESH');
-save(sprintf('./ROMS/ROM_%s_%dELS.mat',sel_method,Nels), 'M', 'K', 'R', 'L', 'Fv', 'TFMf', 'TFMfhcb', 'MESH');
+save(sprintf('./ROMS/ROM_%s_%dELS.mat',sel_method,Nels), 'M', 'K', 'R', 'L', 'Fv', 'TFMh', 'TFMf', 'TFMfhcb', 'MESH', 'ttk');
 disp('Done!')
+end

@@ -1,0 +1,23 @@
+Analysis initiated from SIMULIA established products
+Abaqus JOB Job-1
+Abaqus 3DEXPERIENCE R2019x
+Abaqus License Manager checked out the following licenses:
+Abaqus/Standard checked out 5 tokens from Flexnet server abaqus.lic.rice.edu.
+<155 out of 160 licenses remain available>.
+Begin Analysis Input File Processor
+Tue Mar 17 15:45:57 2020
+Run pre
+Tue Mar 17 15:45:59 2020
+End Analysis Input File Processor
+Begin Abaqus/Standard Analysis
+Tue Mar 17 15:45:59 2020
+Run standard
+Tue Mar 17 15:46:13 2020
+Abaqus Error: Abaqus/Standard Analysis exited with an error - Please see the 
+message file for possible error messages if the file exists.
+Begin Convert MFS to SFS
+Tue Mar 17 15:46:14 2020
+Run SMASimUtility
+Tue Mar 17 15:46:14 2020
+End Convert MFS to SFS
+Abaqus/Analysis exited with errors

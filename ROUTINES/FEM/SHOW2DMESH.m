@@ -25,7 +25,8 @@ function [] = SHOW2DMESH(Nds,Tri_Els,Quad_Els,Cface,Cid,ts, varargin)
     if length(varargin)==2
         Netot = varargin{2};
     end
-
+    Netot = max([Quad_Els(:,1); Tri_Els(:,1)]);
+    
     Nn = size(Nds,1);
     Nt = size(Tri_Els,1);
     Nq = size(Quad_Els,1);

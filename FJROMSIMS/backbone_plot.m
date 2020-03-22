@@ -24,7 +24,12 @@ Nelrange = [68 152 292];
 mi = 1;
 %% Load Reference Data
 exx = load('../FULLJOINT_REF/DATS/RUN2.mat', 'QS', 'WS', 'ZS', 'DS','ZSM','BBS');
-
+ref = load('../FULLJOINT_REF/PREP/5_SET_NULLRED.mat','Mrel','L','Rrel');
+Mref = ref.Mrel;
+Lref = ref.L;
+Rref = ref.Rrel;
+MSref = Lref*cell2mat(cellfun(@(c) c.MS(:,end), exx.BBS, 'UniformOutput', false));
+MSref = sign(Rref(3,:)*MSref).*MSref;
 %% Plot Backbones
 figure(10);
 clf()
@@ -58,7 +63,8 @@ for ii=1:length(Nelrange)
 end
 subplot(ax1)
 xticklabels([])
-legend(aa(1:end), 'Location', 'southwest')
+ll=legend(aa(1:end), 'Location', 'southwest');
+set(ll, 'visible', 'off')
 ylabel('Natural Frequency (Hz)')
 xlim([1e-6 1e-1])
 
@@ -78,17 +84,19 @@ set(gcf,'color','white')
 aa = gobjects(4,1);
 colos = DISTINGUISHABLE_COLORS(7);  colos = colos(end-2:end,:);
 
-semilogx(exx.QS, exx.WS/2/pi, 'k-', 'LineWidth', 2); hold on
-k=1;
+aa(1) = semilogx(exx.QS, exx.WS/2/pi, 'k-', 'LineWidth', 2); hold on
+legend(aa(1), sprintf('Reference (%d DoFs)',size(exx.BBS{1}.U,1)-1), 'fontsize', 16)
 k=1;
 for ii=1:length(Nelrange)
     Nels = Nelrange(ii);
 %     load(sprintf('./DATS/RUN_%d.mat',p), 'QS', 'WS', 'ZSM', 'BBS');
     load(sprintf('./DATS/RUN_M%d_%s_%dELS.mat',mi,sel_method,Nels), 'QS', 'WS', 'ZSM', 'BBS');
     
-    semilogx(QS, WS/2/pi, symbs{k}, 'Color', colos(k,:), 'MarkerFaceColor', colos(k,:));
+    aa(k+1) = semilogx(QS, WS/2/pi, symbs{k}, 'Color', colos(k,:), 'MarkerFaceColor', colos(k,:));
+    legend(aa(k+1), sprintf('%d Element ROM (%d DoFs)',Nels,size(BBS{1}.U,1)-1))
     k = k+1;
 end
+legend(aa(1:end), 'Location', 'southwest')
 xlabel('Modal Amplitude')
 ylabel('Natural Frequency (Hz)')
 ylim([132 172])
@@ -96,3 +104,31 @@ xlim([1e-6 2e-3])
 
 % print(sprintf('./FIGURES/ROMBB_M%d_%s_ZOOM.eps',mi,sel_method), '-depsc')
 export_fig(sprintf('./FIGURES/ROMBB_M%d_%s_ZOOM.eps',mi,sel_method))
+
+%% Mode Shape Deviations
+figure(30)
+clf()
+set(gcf, 'Color', 'white')
+
+aa = gobjects(4,1);
+colos = DISTINGUISHABLE_COLORS(7);  colos = colos(end-2:end,:);
+
+k=1;
+for ii=1:length(Nelrange)
+    Nels = Nelrange(ii);
+    load(sprintf('./DATS/RUN_M%d_%s_%dELS.mat',mi,sel_method,Nels), 'QS', 'WS', 'ZSM', 'BBS');
+    load(sprintf('../FULLJOINT_ROM_PREPARE/ROMS/ROM_%s_%dELS.mat',sel_method,Nels), 'TFMh');
+    MSrom = TFMh*cell2mat(cellfun(@(c) c.MS(:,end), BBS, 'UniformOutput', false));
+    MSrom = sign(Rref(3,:)*MSrom).*MSrom;
+    
+    semilogx(QS, sqrt(2*(1-diag(MSrom'*Mref*MSref))), symbs{k}, 'Color', colos(k,:), 'MarkerFaceColor', colos(k,:)); hold on
+    k=k+1;
+end
+
+xlabel('Modal Amplitude')
+ylabel('Mode shape deviation')
+% ylim([132 172])
+xlim([1e-6 2e-3])
+
+% print(sprintf('./FIGURES/ROMBB_M%d_%s_MAC.eps',mi,sel_method), '-depsc')
+export_fig(sprintf('./FIGURES/ROMBB_M%d_%s_MAC.eps',mi,sel_method))

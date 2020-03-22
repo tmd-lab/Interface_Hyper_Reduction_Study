@@ -110,13 +110,13 @@ for n=1:Npatches
     qps{n} = Q1(Pels{n}, :)*MESH.Nds;
     ctrds(n, :) = sum(Area{n}.*MESH.Nds(Pnds{n}, :))/sum(Area{n});
     
-    k=n;SHOW2DMESH(MESH.Nds, [], MESH.Quad(Pels{k},:), Plevs(k), -1, -100)
+    k=n;SHOW2DMESH(MESH.Nds, [], MESH.Quad(Pels{k},:), Plevs(k)*ones(MESH.Ne,1), -1, -100)
 end
 PatchAreas = cellfun(@(c) sum(c), Area);
 axis equal; axis off; colormap(jet(Npatches));
 title(sprintf('%d Patches',Npatches))
 set(gca, 'Position', [-0.5 -0.1 2 1])
-print(sprintf('./FIGS/P%d_S%.2f_%s_%dLEV_%dPATCH_MESH.eps',Prestress, log10(sint), sel_method, Nlevs,Npatches), '-depsc')
+% print(sprintf('./FIGS/P%d_S%.2f_%s_%dLEV_%dPATCH_MESH.eps',Prestress, log10(sint), sel_method, Nlevs,Npatches), '-depsc')
 pause(1)
 % return
 %% Relative Coordinate Transformation: [XT-XB; XB; eta]
@@ -177,11 +177,14 @@ Lamhcb = Thcb'*LamTa;
 disp('DONE!')
 
 %% NULL-SPACE REDUCTION
-[Vhcb, Dhcb] = eig(full(Khcb(Npatches*3+1:end, Npatches*3+1:end)), full(Mhcb(Npatches*3+1:end, Npatches*3+1:end))); 
-% [Vhcb, Dhcb] = eig(full(Khcb), full(Mhcb)); 
+% [Vhcb, Dhcb] = eig(full(Khcb(Npatches*3+1:end, Npatches*3+1:end)), full(Mhcb(Npatches*3+1:end, Npatches*3+1:end))); 
+% [Dhcb, si] = sort(diag(Dhcb));  Vhcb = Vhcb(:, si);
+% Vrbms = [zeros(Npatches*3, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
+% L = null(Vrbms'*Mhcb);
+
+[Vhcb, Dhcb] = eig(full(Khcb(Npatches*6+1:end, Npatches*6+1:end)), full(Mhcb(Npatches*6+1:end, Npatches*6+1:end)));
 [Dhcb, si] = sort(diag(Dhcb));  Vhcb = Vhcb(:, si);
-% Vrbms = Vhcb(:, 1:6);
-Vrbms = [zeros(Npatches*3, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
+Vrbms = [zeros(Npatches*6, 6); Vhcb(:, 1:6)];  Vrbms = Vrbms./sqrt(diag(Vrbms'*Mhcb*Vrbms)');
 L = null(Vrbms'*Mhcb);
 
 M = L'*Mhcb*L;

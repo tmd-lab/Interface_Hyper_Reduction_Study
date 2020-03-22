@@ -20,16 +20,16 @@ load(fname, 'MESH')
 %%
 % sel_method = 'P' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
 % wd = 0;  wp = 1;
-% Nlevs = [2 4 10];
+% Nlevs = [2 4 7];
 % sn = 10;
 
-sel_method = 'PD' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
-wd = 1;  wp = 1;
-Nlevs = [2 6 11];
-sn = 10;
+% sel_method = 'PD' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
+% wd = 1;  wp = 1;
+% Nlevs = [2 6 10];
+% sn = 10;
 
-% sel_method = 'U' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
-% Nlevs = [3 11 21];
+sel_method = 'U' % 'P'(2,3,4,5,6,10) 'PD' (2,3,6,7,8,11) 'U' (3, 5, 7, 9, 11, 19, 21)
+Nlevs = [3 11 19];
 
 %% Recreate Objectives
 if sel_method ~= 'U'
@@ -62,7 +62,7 @@ if sel_method ~= 'U'
     clf()
     set(gcf,'color','white')
     
-    SHOW2DMESH(MESH.Nds, MESH.Tri, MESH.Quad, Obje, -1, -100);
+    SHOW2DMESH(MESH.Nds, zeros(0,4), MESH.Quad, Obje, -1, -100);
 
     yy = colorbar('southoutside', 'FontSize', 14);
     xlabel(yy, sprintf('%s Field Objective',sel_method))
@@ -79,8 +79,6 @@ if sel_method ~= 'U'
     export_fig(sprintf('./FIGS/WJ_Fobjective_%s.eps',sel_method))
 end
 
-return
-
 %%
 figure(2)
 clf()
@@ -89,11 +87,11 @@ ys = [yr 0 -yr]*1.5;
 Ctrds = Q1*MESH.Nds;
 for i=1:length(Nlevs)
     Nlev = Nlevs(i)
-    load(sprintf('./REDMATS/P11580_S-6.00_%s_%dLEV_GRED_WJMAT.mat', sel_method, Nlev), ...
+    load(sprintf('./REDMATS/P11580_S-6.00_%s_%dLEV_GRED_WJMAT_prop.mat', sel_method, Nlev), ...
         'Pels', 'Pnds')
     
     for p=1:length(Pels)
-        SHOW2DMESH(MESH.Nds+[0 ys(i)], MESH.Tri, MESH.Quad(Pels{p},:), ...
+        SHOW2DMESH(MESH.Nds+[0 ys(i)], zeros(0,4), MESH.Quad(Pels{p},:), ...
                    p, -1, -101, 0, MESH.Ne);
         [~, AdjE] = NODEELADJ(MESH.Nds, MESH.Quad(Pels{p},2:end));
         % tE = diag(AdjE); tE(tE==0) = 1.0;
