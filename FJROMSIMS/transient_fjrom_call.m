@@ -1,5 +1,4 @@
-clc
-clear all
+function [] = transient_fjrom_call(sel_method, i)
 addpath('../ROUTINES/ROUTINES')
 addpath('../ROUTINES/ROUTINES/FEM')
 addpath('../ROUTINES/ROUTINES/CONTACTMODELS')
@@ -7,9 +6,19 @@ addpath('../ROUTINES/ROUTINES/QUASISTATIC')
 addpath('../ROUTINES/ROUTINES/TRANSIENT')
 addpath('../ROUTINES/ROUTINES/SOLVERS')
 
+keyboard
+
 % ROM levels
-sel_method = 'P';
-Nels = 52;  % [52 100 140 204 240 304]
+Ncs = containers.Map();
+Ncs('P') = [52 100 140 204 240 304];
+Ncs('U') = [36 74 122 232 448 568 588];
+Ncs('PD') = [48 108 152 200 252 292];
+
+Nelss = Ncs(sel_method);
+Nels = Nelss(i);
+
+% sel_method = 'P';
+% Nels = 52;  % [52 100 140 204 240 304]
 
 % sel_method = 'U';
 % Nels = 568; % [36 74 122 232 448 568 588]
@@ -105,3 +114,5 @@ Fh = fex(Th);
 Finput = fdyn(Th);
 
 save(sprintf('./DATS/TRANSIENT_%s_%dELS.mat',sel_method,Nels), 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', 'ttk')
+
+end
