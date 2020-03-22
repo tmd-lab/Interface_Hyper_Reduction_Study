@@ -10,6 +10,6 @@ tot = 15;
 % sel_method = 'PD';
 % tot = 7;
 
-for i=1:tot
-    batch(@transient_fjrom_call, 0, {sel_method, i});
+for i=2:tot
+    batch(@transient_wjrom_call, 0, {sel_method, i});
 end
