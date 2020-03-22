@@ -6,8 +6,6 @@ addpath('../ROUTINES/ROUTINES/QUASISTATIC')
 addpath('../ROUTINES/ROUTINES/TRANSIENT')
 addpath('../ROUTINES/ROUTINES/SOLVERS')
 
-keyboard
-
 % ROM levels
 Ncs = containers.Map();
 Ncs('P') = [52 100 140 204 240 304];
@@ -100,7 +98,7 @@ T1 = 2.5;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-    'Display', false, 'ITMAX', 100, 'waitbar', true);
+    'Display', true, 'ITMAX', 100, 'waitbar', false);
 tic
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) MESH.CONTACTEVAL(x, z, xd, Pars, pA, L), ...
