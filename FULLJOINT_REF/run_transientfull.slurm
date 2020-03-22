@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=FJREFTRANS
+#SBATCH --job-name=FJREFTRANSFULL
 #SBATCH --ntasks=1
-#SBATCH --mem=10G
+#SBATCH --mem=5G
 #SBATCH --time=5:00:00
 #SBATCH --mail-user=nb25@rice.edu
 #SBATCH --mail-type=ALL
