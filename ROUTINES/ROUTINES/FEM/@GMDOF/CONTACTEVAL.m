@@ -33,10 +33,10 @@ function [Fn, Z, dFndUn, dFndUnd, dFndPars, Fs_qp] = CONTACTEVAL(m, Un, Z, Und, 
 
   if length(varargin)>=1
     pA = varargin{1};
-    Parsc = reshape(pA*Pars, [], m.Ne*m.Nq^2);
+    Parsc = reshape(pA*Pars, [], m.Nn);
   else
     pA = speye(length(Pars));
-    Parsc = reshape(Pars, [], m.Ne*m.Nq^2);
+    Parsc = reshape(Pars, [], m.Nn);
   end
   Npars = size(Parsc, 1);
 
@@ -47,18 +47,21 @@ function [Fn, Z, dFndUn, dFndUnd, dFndPars, Fs_qp] = CONTACTEVAL(m, Un, Z, Und, 
   end
 
   Nu = length(Un);     % Number of dofs in U vector
-  Ncdof = m.Nn*m.dpn;  % Number of contact DoFs
 
-  Us_qp = reshape(m.Qm*Un(1:Ncdof), m.dpn, []);    % dpn x Nnl
-  Uds_qp = reshape(m.Qm*Und(1:Ncdof), m.dpn, []);  % dpn x Nnl
+  Us_qp = reshape(m.Qm*Un, m.dpn, []);    % dpn x Nnl
+  Uds_qp = reshape(m.Qm*Und, m.dpn, []);  % dpn x Nnl
 
-  [Fs_qp, Z, dFsdUs_qp, dFsdUds_qp, dFsdpars_qp] = m.fcont(Us_qp', Z, Uds_qp', Parsc);
+  [Fs_qp, Z, dFsdUs_qp, dFsdUds_qp, dFsdPars_qp] = m.fcont(Us_qp, Z, Uds_qp, Parsc);
 
-  Fn = m.Tm*m.reshape(Fs_qp, [], 1);  
+  Fn = m.Tm*reshape(Fs_qp, [], 1);
   
-  dFndUn   = m.Tm*dFsdUs_qp*m.Qm;
-  dFndUnd  = m.Tm*dFsdUds_qp*m.Qm;
-  dFndPars = m.Tm*dFsdPars_qp;
+  dFsdUs_qp = num2cell(dFsdUs_qp, [1, 2]);
+  dFsdUds_qp = num2cell(dFsdUds_qp, [1, 2]);
+  dFsdPars_qp = num2cell(dFsdPars_qp, [1, 2]);
+  
+  dFndUn   = m.Tm*blkdiag(dFsdUs_qp{:})*m.Qm;
+  dFndUnd  = m.Tm*blkdiag(dFsdUds_qp{:})*m.Qm;
+  dFndPars = m.Tm*blkdiag(dFsdPars_qp{:});
 
   if length(varargin)>=2  % Project/Mask everything back
     Fn = pU'*Fn;

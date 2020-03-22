@@ -20,7 +20,7 @@ load(fname, 'M', 'K', 'L', 'R', 'Fv', 'Th', 'I2', 'cnum', 'MESH', ...
 
 mi = 1;
 %% Setup GMDOF class
-SYS = GMDOF(1:Npatches, 6, L(1:Npatches*6, :), L(1:Npatches*6, :)');
+SYS = GMDOF((1:Npatches)', 6, L(1:Npatches*6, :), L(1:Npatches*6, :)');
 SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2, 0), sparse(2, Npatches));
 
 %% Interface Parameters
@@ -40,14 +40,14 @@ kn   = kt/ktkn;             % Normal Stiffness
 Pars = [kt; kt; kn; mu];
 pA = zeros(Npatches*4, 4);
 pA(1:4:end, 1) = PatchAreas;
-pA(2:4:end, 1) = PatchAreas;
-pA(3:4:end, 1) = PatchAreas;
-pA(4:4:end, 1) = 1.0;
+pA(2:4:end, 2) = PatchAreas;
+pA(3:4:end, 3) = PatchAreas;
+pA(4:4:end, 4) = 1.0;
 
 %% Prestress Analysis
 
 				% Fully Stuck Initial Guess
-Kstuck = zeros(Npatches*6);
+Kst = zeros(Npatches*6);
 Kst(1:6:end, 1:6:end) = diag(PatchAreas*kt);
 Kst(2:6:end, 2:6:end) = diag(PatchAreas*kt);
 Kst(3:6:end, 3:6:end) = diag(PatchAreas*kn);
@@ -88,7 +88,7 @@ fex = @(t) R(3, :)'*(fdyn(t))+Fv*Prestress;
 % Initial Conditions
 U0 = Ustat;
 Ud0 = Ustat*0;
-Z0 = Z;
+Z0 = full(Z);
 disp('INITIAL CONDITIONS SET');
 
 %% HHTA Hysteretic
@@ -101,7 +101,7 @@ T1 = 2.5;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-	      'Display', false, 'ITMAX', 100, 'waitbar', true);
+	      'Display', true, 'ITMAX', 100, 'waitbar', false);
 tic
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) SYS.CONTACTEVAL(x, z, xd, Pars, pA), ...
