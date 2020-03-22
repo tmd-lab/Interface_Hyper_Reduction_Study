@@ -8,31 +8,30 @@ addpath('../ROUTINES/ROUTINES/TRANSIENT')
 addpath('../ROUTINES/ROUTINES/SOLVERS')
 
 setid = 5;
-% fname = sprintf('./PREP/%d_SET_NULLRED.mat', setid);
-fname = './PREP/BRB_MATS_NR.mat';
+fname = sprintf('./PREP/%d_SET_NULLRED.mat', setid);
+% fname = './PREP/BRB_MATS_NR.mat';
 load(fname,'M','K','R','Fv','L','T','MESH');
 mds = [1 3 5];
 Prestress = 11580;
 mi = 1;  % Mode of interest
-[Q1,T1] = ZTE_ND2QP(MESH,1);
+
+
+%% Create Mesh Structure
+MESH = MESH2D(MESH.Nds, 3, [], MESH.Quad, 2);
+MESH = MESH.SETCFUN(@(u, z, ud, P) ELDRYFRICT(u, z, ud, P, 0), sparse(2, MESH.Ne*MESH.Nq^2));  % Contact Function
 
 %% Interface Parameters
 mu = 0.20;  %% Friction coefficient
 c = 1.0;  %% Standard Deviation (microns) of surface roughness
 
 nu   = 0.29;                % Poisson's ratio
-Aint = sum(sum(T1));      % Average interface area (lumped)
+Aint = sum(sum(MESH.Tm));      % Average interface area (lumped)
 Pint = Prestress*3/Aint;           % Average lumped interface pressure
 sint = 1e-6*c;              % Average interface asperity SD (exponential distribution)
 chi  = 2.0;                 % Mindlin constant
 ktkn = chi*(1-nu)/(2-nu);   % Tangential-normal stiffness ratio
 kt   = 4*(1-nu)*Pint/(sqrt(pi)*(2-nu)*sint);    % Tangential stiffness
 kn   = kt/ktkn;             % Normal Stiffness
-
-%% Create Mesh Structure
-MESH = MESH2D(MESH.Nds, 3, [], MESH.Quad, 2);
-MESH = MESH.SETCFUN(@(u, z, ud, P) ELDRYFRICT(u, z, ud, P, 0), sparse(2, MESH.Ne*MESH.Nq^2));  % Contact Function
-
 Pars = [kt; kt; kn; mu];
 pA = repmat(eye(4), MESH.Ne*MESH.Nq^2, 1);
 
@@ -91,7 +90,7 @@ T1 = 2.5;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-    'Display', true, 'ITMAX', 100, 'waitbar', true);
+    'Display', true, 'ITMAX', 100, 'waitbar', false);
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) MESH.CONTACTEVAL(x, z, xd, Pars, pA, L), ...
 					   U0, Z0, Ud0, T0, T1, dT, ABG(1), ABG(2), ABG(3), opts);
@@ -100,4 +99,4 @@ plot(Th, R(3, :)*Xh, '.-', 'LineWidth', 2)
 Fh = fex(Th);
 Finput = fdyn(Th);
 
-save('./DATS/TRANSIENT_REF.mat', 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', '-v7')
+save('./DATS/TRANSIENT_REF_full.mat', 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', '-v7')
