@@ -21,7 +21,7 @@ load(fname, 'M', 'K', 'L', 'R', 'Fv', 'Th', 'I2', 'cnum', 'MESH', ...
 mi = 1;
 %% Setup GMDOF class
 SYS = GMDOF((1:Npatches)', 6, L(1:Npatches*6, :), L(1:Npatches*6, :)');
-SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2, 0), sparse(2, Npatches));
+SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2*0, 0), sparse(2, Npatches));
 
 %% Interface Parameters
 %% Interface Parameters
@@ -101,7 +101,7 @@ T1 = 2.5;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-	      'Display', true, 'ITMAX', 100, 'waitbar', false);
+	      'Display', false, 'ITMAX', 100, 'waitbar', true);
 tic
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) SYS.CONTACTEVAL(x, z, xd, Pars, pA), ...
@@ -111,3 +111,5 @@ ttk = toc
 figure(1)
 clf()
 plot(Th, R(3, :)*Xddh, '.-', 'LineWidth', 1);
+
+save(sprintf('./DATS/TRANSIENT_%s_%dLEV.mat',sel_method,Nlev), 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', 'ttk')

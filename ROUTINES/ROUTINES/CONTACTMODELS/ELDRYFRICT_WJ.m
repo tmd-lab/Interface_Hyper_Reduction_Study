@@ -27,20 +27,20 @@ function [Fs, z, dFsdUs, dFsdUds, dFsdkxynmu] = ELDRYFRICT_WJ(us, z, uds, kxynmu
   dFsdUs(1, 1, :) = kxynmu(1,:); % fx,ux
   dFsdUs(2, 2, :) = kxynmu(2,:); % fx,uy
   dFsdUs(3, 3, :) = kxynmu(3,:); % fx,un
-  dFsdUs(4, 1, :) = I2(1, :).*kxynmu(1, :); % ftx,thx
-  dFsdUs(4, 2, :) = I2(2, :).*kxynmu(2, :); % ftx,thy
-  dFsdUs(5, 1, :) = I2(2, :).*kxynmu(1, :); % fty,thx
-  dFsdUs(5, 2, :) = I2(3, :).*kxynmu(2, :); % fty,thx
+  dFsdUs(4, 4, :) = I2(1, :).*kxynmu(1, :); % ftx,thx
+  dFsdUs(4, 5, :) = I2(2, :).*kxynmu(2, :); % ftx,thy
+  dFsdUs(5, 4, :) = I2(2, :).*kxynmu(1, :); % fty,thx
+  dFsdUs(5, 5, :) = I2(3, :).*kxynmu(2, :); % fty,thx
   dFsdUs(6, 6, :) = I2(4, :).*kxynmu(3, :); % ftn,thn
 					    % Parameter derivatives
   dFsdkxynmu(1, 1, :) = us(1,:)-z(1,:); % fx,kx
   dFsdkxynmu(2, 2, :) = us(2,:)-z(2,:); % fy,ky
   dFsdkxynmu(3, 3, :) = us(3,:); % fn,kn
-  dFsdxynmu(4, 1, :) = I2(1, :).*us(4, :); % ftx,kx
-  dFsdxynmu(4, 2, :) = I2(2, :).*us(5, :); % ftx,ky
-  dFsdxynmu(5, 1, :) = I2(2, :).*us(4, :); % fty,kx
-  dFsdxynmu(5, 2, :) = I2(3, :).*us(5, :); % fty,ky
-  dFsdxynmu(6, 3, :) = I2(4, :).*us(6, :); % ftn,kn
+  dFsdkxynmu(4, 1, :) = I2(1, :).*us(4, :); % ftx,kx
+  dFsdkxynmu(4, 2, :) = I2(2, :).*us(5, :); % ftx,ky
+  dFsdkxynmu(5, 1, :) = I2(2, :).*us(4, :); % fty,kx
+  dFsdkxynmu(5, 2, :) = I2(3, :).*us(5, :); % fty,ky
+  dFsdkxynmu(6, 3, :) = I2(4, :).*us(6, :); % ftn,kn
 
 				% 2. SEPARATION
   isep = find(Fs(3,:)==0);  % indices of separated points
@@ -59,7 +59,7 @@ function [Fs, z, dFsdUs, dFsdUds, dFsdkxynmu] = ELDRYFRICT_WJ(us, z, uds, kxynmu
   islips = setdiff(islips, isep);% Not interested in separated points - everything's zero there
   
   fT(fT<eps) = 1.0;  % Avoid dividing by zeros
-  if length(islips) ~= 0
+  if ~isempty(islips)
 				% Derivatives
     dFsdUs(1, 1, islips) = fslip(islips).*Fs(2,islips).^2.*kxynmu(1,islips)./fT(islips).^3;% fx,ux
     dFsdUs(1, 2, islips) = -fslip(islips).*prod(Fs(1:2,islips),1).*kxynmu(2,islips)./fT(islips).^3;% fx,uy
