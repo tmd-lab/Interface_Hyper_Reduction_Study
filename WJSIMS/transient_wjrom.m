@@ -97,7 +97,7 @@ ABG = [0, 1/4, 1/2];  % Unconditionally Stable Newmark-Alpha
 % ABG = [-0.1, 1/6, 1/2];  % HHT-Alpha
 
 T0 = 0;
-T1 = 1e-1;
+T1 = 1e0;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
@@ -111,5 +111,7 @@ ttk = toc
 figure(1)
 clf()
 plot(Th, R(3, :)*Xddh, '.-', 'LineWidth', 1);
+Fh = fex(Th);
+Finput = fdyn(Th);
 
 save(sprintf('./DATS/TRANSIENT_%s_%dLEV.mat',sel_method,Nlev), 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', 'ttk')
