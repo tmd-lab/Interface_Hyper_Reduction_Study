@@ -16,7 +16,8 @@ function [R, dRdU, dRda, Z, dRdPar] = QS_RESFUN(Ua, Z, Pars, L, pA, MESH, M, K, 
 %    K		: (Nu,Nu) Stiffness Matrix
 %    Fs		: (Nu,1) Static Forcing Amplitude
 %    Fv		: (Nu,1) Variable Forcing Amplitude (amplified by a)
-  
+%TODO: Make "L" optional, call it pU
+
   % Compute Contact Forces
   [Fnl, Z, dFdUnl, ~, dFnldP] = CONTACTEVAL(MESH, Ua(1:end-1), Z, Ua(1:end-1)*0, Pars, pA, L);
 

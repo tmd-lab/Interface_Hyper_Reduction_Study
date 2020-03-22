@@ -1,4 +1,4 @@
- clc
+clc
 clear all
 addpath('../ROUTINES/')
 addpath('../ROUTINES/FEM/')
