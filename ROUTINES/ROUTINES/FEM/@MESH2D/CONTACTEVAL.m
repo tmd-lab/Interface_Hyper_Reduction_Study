@@ -76,9 +76,9 @@ function [Fn, Z, dFndUn, dFndUnd, dFndPars, Fxyn_qp] = CONTACTEVAL(m, Un, Z, Und
   end
   
   % Additional Left Transformation
-  Fn = m.LTran*Fn;
-  dFndUn = m.LTran*dFndUn;
-  dFndPars = m.LTran*dFndPars;
+  Fn = m.Ltran*Fn;
+  dFndUn = m.Ltran*dFndUn;
+  dFndPars = m.Ltran*dFndPars;
 
   if length(varargin)>=2  % Project/Mask everything back
     Fn = pU'*Fn;
