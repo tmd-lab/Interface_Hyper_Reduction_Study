@@ -18,6 +18,8 @@ classdef MESH2D
 
     fcont 	% Contact Function
     z       % Slider States for fcont
+    
+    Ltran = 1.0  % Miscellaneous left transformation (can be used with RoMs) (needs to be square)
   end
 
   methods
@@ -83,7 +85,11 @@ classdef MESH2D
       m.Qm = m.Qm;
       m.Tm = m.Tm;
       
-      z = single(m.z);
+      m.z = single(m.z);
+    end
+    
+    function m = SETLTRAN(m, Ltran)
+        m.Ltran = Ltran;
     end
   end
 end

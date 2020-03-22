@@ -74,6 +74,11 @@ function [Fn, Z, dFndUn, dFndUnd, dFndPars, Fxyn_qp] = CONTACTEVAL(m, Un, Z, Und
 				   m.INTEG_QP(diag(squeeze(DfxynDpars_qp(i, j, :))))*pA(j:Npars:end, :);
     end
   end
+  
+  % Additional Left Transformation
+  Fn = m.LTran*Fn;
+  dFndUn = m.LTran*dFndUn;
+  dFndPars = m.LTran*dFndPars;
 
   if length(varargin)>=2  % Project/Mask everything back
     Fn = pU'*Fn;
