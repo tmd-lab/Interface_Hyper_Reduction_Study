@@ -24,18 +24,18 @@ function [Fs, z, dFsdUs, dFsdUds, dFsdkxynmukth] = ELDRYFRICT_WJ(us, z, uds, kxy
   Fs(5, :) = kxynmukth(7, :).*us(4, :) + kxynmukth(8, :).*us(5, :);
   Fs(6, :) = kxynmukth(9, :).*us(6, :);
 					    % Derivatives
-  dFsdUs(1, 1, :) = kxynmukth(1,:); % fx,ux
-  dFsdUs(2, 2, :) = kxynmukth(2,:); % fx,uy
-  dFsdUs(3, 3, :) = kxynmukth(3,:); % fx,un
+  dFsdUs(1, 1, :) = kxynmukth(1, :); % fx,ux
+  dFsdUs(2, 2, :) = kxynmukth(2, :); % fx,uy
+  dFsdUs(3, 3, :) = kxynmukth(3, :); % fx,un
   dFsdUs(4, 4, :) = kxynmukth(5, :); % ftx,thx
   dFsdUs(4, 5, :) = kxynmukth(6, :); % ftx,thy
   dFsdUs(5, 4, :) = kxynmukth(7, :); % fty,thx
-  dFsdUs(5, 5, :) = kxynmukth(8, :); % fty,thx
+  dFsdUs(5, 5, :) = kxynmukth(8, :); % fty,thy
   dFsdUs(6, 6, :) = kxynmukth(9, :); % ftn,thn
 					    % Parameter derivatives
   dFsdkxynmukth(1, 1, :) = us(1,:)-z(1,:); % fx,kx
   dFsdkxynmukth(2, 2, :) = us(2,:)-z(2,:); % fy,ky
-  dFsdkxynmukth(3, 3, :) = us(3,:); % fn,kn
+  dFsdkxynmukth(3, 3, :) = us(3, :); % fn,kn
   dFsdkxynmukth(4, 5, :) = us(4, :); % ftx,ktx
   dFsdkxynmukth(4, 6, :) = us(5, :); % ftx,kty
   dFsdkxynmukth(5, 7, :) = us(4, :); % fty,ktx
@@ -68,7 +68,7 @@ function [Fs, z, dFsdUs, dFsdUds, dFsdkxynmukth] = ELDRYFRICT_WJ(us, z, uds, kxy
     dFsdUs(2, 1, islips) = -fslip(islips).*prod(Fs(1:2,islips),1).*kxynmukth(1,islips)./fT(islips).^3;% fy,ux
     dFsdUs(2, 2, islips) = fslip(islips).*Fs(1,islips).^2.*kxynmukth(2,islips)./fT(islips).^3;% fy,uy
     dFsdUs(2, 3, islips) = kxynmukth(4,islips).*kxynmukth(3,islips).*Fs(2,islips)./fT(islips);% fy,un
-    dFsdUs(4:end, :, islips) = 0;
+    dFsdUs(4:6, :, islips) = 0;
 				% Parameter Derivatives
     dFsdkxynmukth(1, 1, islips) = fslip(islips).*Fs(2,islips).^2.*(us(1,islips)-z(1,islips))./fT(islips).^3;% fx,kx
     dFsdkxynmukth(1, 2, islips) = -fslip(islips).*prod(Fs(1:2,islips),1).*(us(2,islips)-z(2,islips))./fT(islips).^3;% fx,ky
@@ -79,12 +79,17 @@ function [Fs, z, dFsdUs, dFsdUds, dFsdkxynmukth] = ELDRYFRICT_WJ(us, z, uds, kxy
     dFsdkxynmukth(2, 2, islips) = fslip(islips).*Fs(1,islips).^2.*(us(2,islips)-z(2,islips))./fT(islips).^3;% fy,ky
     dFsdkxynmukth(2, 3, islips) = kxynmukth(4,islips).*us(3,islips).*Fs(2,islips)./fT(islips);% fy,kn
     dFsdkxynmukth(2, 4, islips) = (fslip(islips)./kxynmukth(4,islips)).*Fs(2,islips)./fT(islips);% fy,mu
-    dFsdkxynmukth(4:end, :, islips) = 0;
+    
+    dFsdkxynmukth(4:6, :, islips) = 0;
 
 				% Update forces to lie on slip-cone
     Fs(1:2, islips) = Fs(1:2, islips).*repmat(fslip(islips)./fT(islips), 2, 1);
-    Fs(4:end, islips) = 0;
+    Fs(4:6, islips) = 0;
 
     z(:, islips) = us(1:2, islips) - Fs(1:2, islips)./kxynmukth(1:2, islips);  % only x, y are hysteretic
   end
+  
+  % Remove N0 (unbalanced static force, assumed to just exist to activate the sliders)
+  Fs(3, :) = Fs(3, :) - N0;
+  Fs(3, isep) = 0;
 end

@@ -21,8 +21,8 @@ load(fname, 'M', 'K', 'L', 'R', 'Fv', 'Th', 'I2', 'cnum', 'MESH', ...
 mi = 1;
 %% Setup GMDOF class
 SYS = GMDOF((1:Npatches)', 6, L(1:Npatches*6, :), L(1:Npatches*6, :)');
-SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, I2, 0), sparse(2, Npatches));
-
+SYS = SYS.SETCFUN(@(us, z, uds, P) ELDRYFRICT_WJ(us, z, uds, P, 0), sparse(2, Npatches));
+% I2 = I2.*PatchAreas;  % Works, but is incorrect
 %% Interface Parameters
 %% Interface Parameters
 mu = 0.20;  %% Friction coefficient
@@ -102,11 +102,11 @@ ABG = [0, 1/4, 1/2];  % Unconditionally Stable Newmark-Alpha
 % ABG = [-0.1, 1/6, 1/2];  % HHT-Alpha
 
 T0 = 0;
-T1 = 1e0;
-dT = 1e-5;  % 5000 Hz Nyquist
+T1 = 2e-3;
+dT = 1e-6;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-	      'Display', false, 'ITMAX', 100, 'waitbar', true);
+	      'Display', true, 'ITMAX', 100, 'waitbar', true);
 tic
 [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) SYS.CONTACTEVAL(x, z, xd, Pars, pA), ...
