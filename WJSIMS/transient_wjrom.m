@@ -38,11 +38,16 @@ kt   = 4*(1-nu)*Pint/(sqrt(pi)*(2-nu)*sint);    % Tangential stiffness
 kn   = kt/ktkn;             % Normal Stiffness
 
 Pars = [kt; kt; kn; mu];
-pA = zeros(Npatches*4, 4);
-pA(1:4:end, 1) = PatchAreas;
-pA(2:4:end, 2) = PatchAreas;
-pA(3:4:end, 3) = PatchAreas;
-pA(4:4:end, 4) = 1.0;
+pA = zeros(Npatches*9, 4);
+pA(1:9:end, 1) = PatchAreas; % kx
+pA(2:9:end, 2) = PatchAreas; % ky
+pA(3:9:end, 3) = PatchAreas; % kn
+pA(4:9:end, 4) = 1.0; % mu
+pA(5:9:end, 1) = I2(1, :); % ktxx 
+pA(6:9:end, 2) = I2(2, :); % ktxy
+pA(7:9:end, 1) = I2(2, :); % ktyx
+pA(8:9:end, 2) = I2(3, :); % ktyy
+pA(9:9:end, 3) = I2(4, :); % ktnn
 
 %% Prestress Analysis
 
