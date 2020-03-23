@@ -106,19 +106,26 @@ ABG = [0, 1/4, 1/2];  % Unconditionally Stable Newmark-Alpha
 % ABG = [-0.1, 1/6, 1/2];  % HHT-Alpha
 
 T0 = 0;
-T1 = 2.5;
+T1 = 1;
 dT = 1e-5;  % 5000 Hz Nyquist
 
 opts = struct('reletol', 1e-12, 'etol', 1e-6, 'rtol', 1e-6, 'utol', 1e-6, ...
-	      'Display', false, 'ITMAX', 100, 'waitbar', true);
-tic
-[Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
+	      'Display', true, 'ITMAX', 100, 'waitbar', false);
+Th = 0;
+dT = 1e-4;
+while Th(end)~=T1
+    dT = dT/2;
+    tic
+    [Th, Xh, zh, Xdh, Xddh] = HHTA_NONLIN_HYST(M, C, K, fex, ...
 					   @(t, x, z, xd) SYS.CONTACTEVAL(x, z, xd, Pars, pA), ...
 					   U0, Z0, Ud0, T0, T1, dT, ABG(1), ABG(2), ABG(3), opts);
-ttk = toc
+    ttk = toc
+end
 
 figure(1)
 clf()
 plot(Th, R(3, :)*Xddh, '.-', 'LineWidth', 1);
+Fh = fex(Th);
+Finput = fdyn(Th);
 
 save(sprintf('./DATS/TRANSIENT_%s_%dLEV.mat',sel_method,Nlev), 'Th', 'Xh', 'zh', 'Xdh', 'Xddh', 'Fh', 'Finput', 'famp', 'freq', 'ttk')
