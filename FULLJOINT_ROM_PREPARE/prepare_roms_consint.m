@@ -5,9 +5,10 @@ addpath('../ROUTINES/FEM/')
 addpath('../ROUTINES/GRAPH/')
 
 MEXPATH = '../MATRIX_EXTRACTION/RUNS/';
-SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', '5_INTSETNPS'};
+SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', ...
+            '5_INTSETNPS', 'HBRB_Baseline', 'HBRB_FewModes'};
 
-setid = 5;  % To call SETDIRS
+setid = 7;  % To call SETDIRS
 
 % ROM levels
 % sel_method = 'P';
@@ -19,15 +20,18 @@ setid = 5;  % To call SETDIRS
 % sel_method = 'PD';
 % Nels = 152;  % [48 68 108 152 200 252 292]
 
-sel_method = 'PD';
-for Nels = [68]
+sel_method = 'U';
+for Nels = [232]
 % % FRICTMODEL STUDY
 % sel_method = 'PD';
 % Nels = 68;
 %% Mesh Extract
 % MESH.Nds     = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Nodes.dat');
 % MESH.Quad    = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Elements.dat');
-MESH.Nds     = dlmread([MEXPATH SETDIRS{setid} '/Nodes.dat']);
+
+Nodes = dlmread([MEXPATH SETDIRS{setid} '/Nodes.dat']);
+
+MESH.Nds     = Nodes(:, 1:2); % Need to eliminate potential 3rd column of zcoordinates for this code to work. 
 MESH.Quad    = dlmread([MEXPATH SETDIRS{setid} '/Elements.dat']);
 MESH.Tri     = [];
 MESH.Nn      = size(MESH.Nds, 1);
@@ -41,8 +45,8 @@ disp('MESH Extracted')
 %% Load Mat Files
 load([MEXPATH SETDIRS{setid} '/BRB_WOPRES_MAT.mat'], 'M', 'K', 'R', ...
      'Fv');
-Fv = sparse(Fv');
-R = sparse(R');
+Fv = sparse(Fv);
+R = sparse(R);
 M = sparse(M); M = 0.5*(M+M');
 K = sparse(K); K = 0.5*(K+K');
 Nrest = size(M, 1)-Nint*3*2;
@@ -100,11 +104,16 @@ TFMhcb = TFM*Thcb;
 %% Null Space Reduction
 [V, D] = eigs(Khcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), Mhcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), 10, 'SM');
 [D,si] = sort(sqrt(abs(diag(D)))/(2*pi));
+V = V(:, si);
 nrbms = 6;
 Vrbm = [zeros(red.MESH.Nn*3,nrbms); V(:,1:nrbms)];  Vrbm = Vrbm./sqrt(diag(Vrbm'*Mhcb*Vrbm)');
 L = null(Vrbm'*Mhcb);
 
-M = L'*Mhcb*L;  M = 0.5*(M+M');
+
+[U, S, V] = svd(L, 'econ');
+L = U;
+
+M = L'*Mhcb*L;  % M = 0.5*(M+M'); % Enforcing Symmetry breaks M in this case
 K = L'*Khcb*L;  K = 0.5*(K+K');
 R = Rhcb*L;
 Fv = L'*Fvhcb;
