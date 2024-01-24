@@ -109,11 +109,30 @@ nrbms = 6;
 Vrbm = [zeros(red.MESH.Nn*3,nrbms); V(:,1:nrbms)];  Vrbm = Vrbm./sqrt(diag(Vrbm'*Mhcb*Vrbm)');
 L = null(Vrbm'*Mhcb);
 
-
 [U, S, V] = svd(L, 'econ');
 L = U;
 
-M = L'*Mhcb*L;  % M = 0.5*(M+M'); % Enforcing Symmetry breaks M in this case
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Alternative L with Gram-Schmidt 
+disp('Using alternative L, this has not been well tested.')
+tmp = eye(size(V, 1));
+ModeToOrtho = [V(:, 1:nrbms), tmp(:, nrbms+1:end)];
+
+for col_curr = 2:size(ModeToOrtho, 2)
+    for col_sub = 1:(col_curr-1)
+        tmp = (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_curr)) / (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_sub));
+        ModeToOrtho(:, col_curr) = ModeToOrtho(:, col_curr) - tmp * ModeToOrtho(:, col_sub);
+    end
+end
+
+ModeNull = ModeToOrtho(:, nrbms+1:end);
+
+L = [eye(red.MESH.Nn*3), zeros(red.MESH.Nn*3, size(ModeNull, 2));
+     zeros(size(ModeNull, 1), red.MESH.Nn*3), ModeNull];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+M = L'*Mhcb*L;  M = 0.5*(M+M'); 
 K = L'*Khcb*L;  K = 0.5*(K+K');
 R = Rhcb*L;
 Fv = L'*Fvhcb;
