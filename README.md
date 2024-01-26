@@ -29,6 +29,7 @@ Some folders referenced here may not be publicly available.
 5. Set the ROM type by setting sel_method to one of {'P', 'U', 'PD'}. These different methods are all described in the journal paper. Then select the number of elements that you want in the reduced mesh. The options for each reduction type are listed in a comment. E.g., 232 is valid for U, but not for P or PD. The variable Nels that the for loop is for needs to be set to this value. 
 6. Download the mesh details for the model you are using to a new directory named 'MATS' under 'FULLJOINT_ROM_PREPARE'. For members of the Tribomechadynamics lab, meshes can be found [here](https://rice.app.box.com/folder/245530630890). These files should just contain a few items, but it appears that some also contain full M and K matrices that will be ignored for the rest of this process. 
 7. Make a folder under FULLJOINT_ROM_PREPARE named 'ROMS'. Your output model will be put here with the name like 'ROM_U_232ELS.mat' (232 elements with uniform reduction). 
+8. The relative coordinate transformation currently needs to be manually defined. Open your abaqus output (Modelmats.mtx) and check if the bottom or top surface outputs nodes first. Look at comments in the relative coordinate transformation to determine which Trel to use (Xt = top, Xb=bot). Abaqus coordinates = Xrel * [Xt - Xb; Xb; Xinternal]. Failing to do so may flip the sign of the contact model and cause other unknown issues if not fully corrected everywhere.
 8. Run FULLJOINT_ROM_PREPARE/prepare_roms_consint.m
 
 

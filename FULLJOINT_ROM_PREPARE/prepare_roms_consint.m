@@ -54,9 +54,22 @@ disp('Matrices Extracted.');
 
 tic
 %% Relative Transformation : [Xt-Xb; Xb; Xi..]
+
+% Goal: Xabaqus = Trel * [Xt-Xb; Xb; Xi..]  
+
+% BRB Outputs: Xabaqus = [Xt; Xb; Xi..] = Trel * [Xt-Xb; Xb; Xi..]
 Trel = sparse([eye(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
                zeros(Nint*3), eye(Nint*3), zeros(Nint*3, Nrest);
                zeros(Nrest, Nint*3*2),     eye(Nrest)]);
+
+disp('HBRB outputs Surfaces in different order')
+if setid >= 6 
+    % HBRB Outputs: Xabaqus = [Xb; Xt; Xi..] = Trel * [Xt-Xb; Xb; Xi..]
+    Trel = sparse([zeros(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
+                   eye(Nint*3),    eye(Nint*3), zeros(Nint*3, Nrest);
+                   zeros(Nrest, Nint*3*2),      eye(Nrest)]);
+end
+
 Mrel  = Trel'*M*Trel; Mrel = 0.5*(Mrel+Mrel');
 Krel  = Trel'*K*Trel; Krel = 0.5*(Krel+Krel');
 Rrel  = R*Trel;
