@@ -82,24 +82,24 @@ color_opts = {'b', 'r'};
 mesh_opts = {MESH, red.MESH};
 % mesh_opts = {MESH};
 
-for j = 1:length(mesh_opts)
-
-    figure; 
-    hold on;
-    cMesh = mesh_opts{j};
-    lc = color_opts{j};
-
-    for i = 1:size(cMesh.Quad, 1)
-
-        node_inds = [cMesh.Quad(i, 2:end), cMesh.Quad(i, 2)];
-
-        plot(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
-        fill(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
-
-%         drawnow; 
-    end
-    pbaspect([range(cMesh.Nds(:, 1)),range(cMesh.Nds(:, 2)),1]); 
-end
+% for j = 1:length(mesh_opts)
+% 
+%     figure; 
+%     hold on;
+%     cMesh = mesh_opts{j};
+%     lc = color_opts{j};
+% 
+%     for i = 1:size(cMesh.Quad, 1)
+% 
+%         node_inds = [cMesh.Quad(i, 2:end), cMesh.Quad(i, 2)];
+% 
+%         plot(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
+%         fill(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
+% 
+% %         drawnow; 
+%     end
+%     pbaspect([range(cMesh.Nds(:, 1)),range(cMesh.Nds(:, 2)),1]); 
+% end
 
 
 %% INTERPOLATION MATRICES
@@ -162,7 +162,7 @@ sqrt(diag(D))/2/pi
 
 disp('Verify Null of Full Modes')
 
-disp('VERY HACKY NULL SPACE SINCE HAD A NEGATIVE EIGENVALUE')
+disp('VERY HACKY NULL SPACE!')
 Linds = [1:3*Nint, 3*Nint+((Nrbm+1):Nb_rom)];
 
 MRel_HCB_Null = MhcbRel(Linds, Linds);
@@ -176,7 +176,7 @@ KRel_HCB_Null = 0.5*(KRel_HCB_Null+KRel_HCB_Null');
 [V, D] = eigs(KRel_HCB_Null, MRel_HCB_Null, 10, 'SM');
 sqrt(diag(D))/2/pi
 
-disp('Full Modes of Null Reduced:')
+disp('Full Modes of Null Reduced: - THESE HAVE CHANGED AND NOW LOOK WRONG!')
 [V, D] = eig(KRel_HCB_Null, MRel_HCB_Null);
 A = diag(D); sqrt(A(1:10))/2/pi
 
@@ -210,27 +210,27 @@ L = null(Vrbm'*Mhcb);
 
 disp(['Eliminating fixed interface modes with modal frequencies of :', mat2str(sqrt(D)/2/pi)])
 
-% [U, S, V] = svd(L, 'econ');
-% L = U;
+[U, S, V] = svd(L, 'econ');
+L = U;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-% Alternative L with Gram-Schmidt 
-disp('Using alternative L, this has not been well tested.')
-tmp = eye(size(V, 1));
-ModeToOrtho = [V(:, 1:nrbms), tmp(:, nrbms+1:end)];
-
-for col_curr = 2:size(ModeToOrtho, 2)
-    for col_sub = 1:(col_curr-1)
-        tmp = (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_curr)) / (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_sub));
-        ModeToOrtho(:, col_curr) = ModeToOrtho(:, col_curr) - tmp * ModeToOrtho(:, col_sub);
-    end
-end
-
-ModeNull = ModeToOrtho(:, nrbms+1:end);
-
-L = [eye(red.MESH.Nn*3), zeros(red.MESH.Nn*3, size(ModeNull, 2));
-     zeros(size(ModeNull, 1), red.MESH.Nn*3), ModeNull];
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%
+% % Alternative L with Gram-Schmidt 
+% disp('Using alternative L, this has not been well tested.')
+% tmp = eye(size(V, 1));
+% ModeToOrtho = [V(:, 1:nrbms), tmp(:, nrbms+1:end)];
+% 
+% for col_curr = 2:size(ModeToOrtho, 2)
+%     for col_sub = 1:(col_curr-1)
+%         tmp = (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_curr)) / (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_sub));
+%         ModeToOrtho(:, col_curr) = ModeToOrtho(:, col_curr) - tmp * ModeToOrtho(:, col_sub);
+%     end
+% end
+% 
+% ModeNull = ModeToOrtho(:, nrbms+1:end);
+% 
+% L = [eye(red.MESH.Nn*3), zeros(red.MESH.Nn*3, size(ModeNull, 2));
+%      zeros(size(ModeNull, 1), red.MESH.Nn*3), ModeNull];
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 M = L'*Mhcb*L;  M = 0.5*(M+M'); 
