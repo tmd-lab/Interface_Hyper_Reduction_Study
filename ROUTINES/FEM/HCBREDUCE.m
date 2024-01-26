@@ -36,9 +36,10 @@ function [Mr,Kr,TFM] = HCBREDUCE(M,K,bdofs,ncomp, varargin)
         L = null( null(full(Kii))' );
 
         % Manual null space in one SVD call
-        [V, S, L2] = svd(full(Kii));
+        [U, S, V] = svd(full(Kii)); % Kii = U * S * V'
         num_drop = sum(diag(S) / S(1,1) < 1e-10);
-        L = L2(1:end-num_drop, :)';
+        
+        L = V(:, 1:end-num_drop); % Columns of V are a basis for X in Kii*X
 
         PhiC = -L* ((L'*Kii*L)\(L'*Kbi'));
     end
