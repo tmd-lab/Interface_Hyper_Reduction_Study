@@ -32,7 +32,14 @@ function [Mr,Kr,TFM] = HCBREDUCE(M,K,bdofs,ncomp, varargin)
 %         Vii = Vii(:, si);
 %         L = null(Vii(:, 1:varargin{1})');
 
+        % Previous algorithm
         L = null( null(full(Kii))' );
+
+        % Manual null space in one SVD call
+        [V, S, L2] = svd(full(Kii), 'econ');
+        num_drop = sum(diag(S) / S(1,1) < 1e-10);
+        L = L2(:, 1:end-num_drop);
+
         PhiC = -L* ((L'*Kii*L)\(L'*Kbi'));
     end
     try

@@ -69,6 +69,39 @@ fname = sprintf('./MATS/REDMESH_%s_%dELS.mat', sel_method, Nels);
 red = load(fname, 'MESH');
 red.MESH.Nds = (red.MESH.Nds-min(red.MESH.Nds)).*range(MESH.Nds)./range(red.MESH.Nds)+min(MESH.Nds);
 
+%% MESH Plotting
+figure; 
+plot(MESH.Nds(:, 1), MESH.Nds(:, 2), 'o'); 
+pbaspect([range(MESH.Nds(:, 1)),range(MESH.Nds(:, 2)),1]); 
+hold on; 
+plot(red.MESH.Nds(:, 1), red.MESH.Nds(:, 2), 'r+');
+
+
+% Plot Mesh Elements
+color_opts = {'b', 'r'};
+mesh_opts = {MESH, red.MESH};
+% mesh_opts = {MESH};
+
+for j = 1:length(mesh_opts)
+
+    figure; 
+    hold on;
+    cMesh = mesh_opts{j};
+    lc = color_opts{j};
+
+    for i = 1:size(cMesh.Quad, 1)
+
+        node_inds = [cMesh.Quad(i, 2:end), cMesh.Quad(i, 2)];
+
+        plot(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
+        fill(cMesh.Nds(node_inds, 1), cMesh.Nds(node_inds, 2), lc)
+
+%         drawnow; 
+    end
+    pbaspect([range(cMesh.Nds(:, 1)),range(cMesh.Nds(:, 2)),1]); 
+end
+
+
 %% INTERPOLATION MATRICES
 % Qn = MESH2PTS(red.MESH, MESH.Nds);
 Qn = MESHTFM(MESH, red.MESH, 4);
@@ -94,12 +127,78 @@ Rred = Rrel*TFM;
 Fvred = TFM'*Fvrel;
 
 disp('ROM prepared.')
+
+disp('Stuck Interface, Relative coordinates - 6 RBMs')
+[V, D1] = eig(full(Krel(Nint*3+1:end,Nint*3+1:end)), full(Mrel(Nint*3+1:end,Nint*3+1:end)));
+A = diag(D1); sqrt(A(1:10))/2/pi
+
+% Call that HBM Should be Doing for stuck:
+[V, D2] = eigs((Krel(Nint*3+1:end,Nint*3+1:end)), (Mrel(Nint*3+1:end,Nint*3+1:end)), 2*3*Nrest, 'SM');
+A = diag(D2); sqrt(A(1:10))/2/pi
+
+%% Create an HCB of the Relative Coordinates - Debugging
+
+Nb_rom = 3*Nrest;
+Nrbm = 6;
+
+% Adding an extra argument here adds a large negative eigenvalue in the HCB
+% solution, but then the null space may be able to correctly eliminate 6
+% RBMs and leave 1 for the separating (null space code here eliminates
+% negative so is not perfect, but close).
+[MhcbRel, KhcbRel, ThcbRel] = HCBREDUCE(Mrel,Krel,1:3*Nint,Nb_rom, true); 
+MhcbRel = 0.5*(MhcbRel+MhcbRel');  KhcbRel = 0.5*(KhcbRel+KhcbRel');
+
+disp('Verify Stuck modes:')
+[V, D] = eigs(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
+sqrt(diag(D))/2/pi
+
+[V, D] = eig(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end));
+A = diag(D); sqrt(A(1:10))/2/pi
+
+
+disp('Verify full modes:')
+[V, D] = eigs(KhcbRel, MhcbRel, 10, 'SM');
+sqrt(diag(D))/2/pi
+
+disp('Verify Null of Full Modes')
+
+disp('VERY HACKY NULL SPACE SINCE HAD A NEGATIVE EIGENVALUE')
+Linds = [1:3*Nint, 3*Nint+((Nrbm+1):Nb_rom)];
+
+MRel_HCB_Null = MhcbRel(Linds, Linds);
+KRel_HCB_Null = KhcbRel(Linds, Linds);
+
+MRel_HCB_Null = 0.5*(MRel_HCB_Null+MRel_HCB_Null');  
+KRel_HCB_Null = 0.5*(KRel_HCB_Null+KRel_HCB_Null');
+
+% This shows 4 zero energy modes, when it should show one based on my
+% understanding.
+[V, D] = eigs(KRel_HCB_Null, MRel_HCB_Null, 10, 'SM');
+sqrt(diag(D))/2/pi
+
+disp('Full Modes of Null Reduced:')
+[V, D] = eig(KRel_HCB_Null, MRel_HCB_Null);
+A = diag(D); sqrt(A(1:10))/2/pi
+
+disp('Verify fixed modes of Null model') % These are good. - no zero eigenvalues
+[V, D] = eigs(KRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), MRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
+sqrt(diag(D))/2/pi
+
+disp('Fundamental problem, KRel_HCB is not P.S.D')
+[V, D] = eig(KRel_HCB_Null);
+A = diag(D); sqrt(A(1:10))/2/pi
+
+
+disp('Double Check that M is P.D.')
+[V, D] = eig(MRel_HCB_Null);
+A = diag(D); sqrt(A(1:10))/2/pi
+
 %% HCB Here
-[Mhcb, Khcb, Thcb] = HCBREDUCE(Mred,Kred,1:red.MESH.Nn*3,Nrest);
+[Mhcb, Khcb, Thcb] = HCBREDUCE(Mred,Kred,1:red.MESH.Nn*3,3*Nrest, true);
 Mhcb = 0.5*(Mhcb+Mhcb');  Khcb = 0.5*(Khcb+Khcb');
 Rhcb = Rred*Thcb;
 Fvhcb = Thcb'*Fvred;
-TFMfhcb = [Thcb(1:red.MESH.Nn*3,:)'*TFMf, zeros(size(Mhcb,1),Nrest)];
+TFMfhcb = [Thcb(1:red.MESH.Nn*3,:)'*TFMf, zeros(size(Mhcb,1),3*Nrest)];
 TFMhcb = TFM*Thcb;
 %% Null Space Reduction
 [V, D] = eigs(Khcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), Mhcb(red.MESH.Nn*3+1:end,red.MESH.Nn*3+1:end), 10, 'SM');
@@ -109,8 +208,10 @@ nrbms = 6;
 Vrbm = [zeros(red.MESH.Nn*3,nrbms); V(:,1:nrbms)];  Vrbm = Vrbm./sqrt(diag(Vrbm'*Mhcb*Vrbm)');
 L = null(Vrbm'*Mhcb);
 
-[U, S, V] = svd(L, 'econ');
-L = U;
+disp(['Eliminating fixed interface modes with modal frequencies of :', mat2str(sqrt(D)/2/pi)])
+
+% [U, S, V] = svd(L, 'econ');
+% L = U;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Alternative L with Gram-Schmidt 
