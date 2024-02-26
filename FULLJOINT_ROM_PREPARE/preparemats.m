@@ -8,6 +8,8 @@ SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', ...
 
 setid = 7;  % To call SETDIRS
 Ncomp_final = 100; % Number of fixed interface modes at final step
+HCB_null_space_tol = 1e-10; 
+
 %% Mesh Extract
 % MESH.Nds     = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Nodes.dat');
 % MESH.Quad    = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Elements.dat');
@@ -58,7 +60,7 @@ if(eliminateXb)
     D_initial2 = sqrt(sort(diag(D_initial2)))/2/pi;
     
     %%%%%%%% Do the Reduction
-    [Mhcb, Khcb, Thcb] = HCBREDUCE(Mrel,Krel,1:MESH.Nn*3,Ncomp_final);
+    [Mhcb, Khcb, Thcb] = HCBREDUCE(Mrel,Krel,1:MESH.Nn*3,Ncomp_final, HCB_null_space_tol);
     Mrel = 0.5*(Mhcb+Mhcb');  Krel = 0.5*(Khcb+Khcb');
     Rrel = Rrel*Thcb;
     Fvrel = Thcb'*Fvrel;

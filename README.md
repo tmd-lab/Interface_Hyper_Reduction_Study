@@ -47,7 +47,8 @@ Run `FULLJOINT_ROM_PREPARE/preparemets.m`. Before running you may need to do the
 1. Set file path and get Abaqus output formatted as described above for the model reduction runs. 
 2. Set `eliminateXb` to true if you want to eliminate the relative coordinates. Otherwise, set to false.
 3. Set `Ncomp_final` to the desired number of fixed interface modes, if you are eliminating relative coordinates.
-4. You may need to pass an extra argument to the HCB reduction if you have trouble will the illconditioned matrix solve in HCB.
+4. You may need to pass an extra argument to the HCB reduction if you have trouble will the illconditioned matrix solve in HCB. 
+   See discussion above. This argument is named `HCB_null_space_tol` in the script now.
 
 
 ## Code changes
