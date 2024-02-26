@@ -3,9 +3,11 @@ clear all
 addpath('../ROUTINES/FEM/') % For HCB
 
 MEXPATH = '../MATRIX_EXTRACTION/RUNS/';
-SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', '5_INTSETNPS'};
+SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', ...
+            '5_INTSETNPS', '6_HBRB_Baseline', '7_HBRB_MoreModes'};
 
-setid = 5;  % To call SETDIRS
+setid = 7;  % To call SETDIRS
+Ncomp_final = 100; % Number of fixed interface modes at final step
 %% Mesh Extract
 % MESH.Nds     = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Nodes.dat');
 % MESH.Quad    = dlmread('../MATRIX_EXTRACTION/RUNS/MESHPROCESS/Elements.dat');
@@ -23,8 +25,8 @@ disp('MESH Extracted')
 %% Load Mat Files
 load([MEXPATH SETDIRS{setid} '/BRB_WOPRES_MAT.mat'], 'M', 'K', 'R', ...
      'Fv');
-Fv = sparse(Fv');
-R = sparse(R');
+Fv = sparse(Fv);
+R = sparse(R);
 M = sparse(M); M = 0.5*(M+M');
 K = sparse(K); K = 0.5*(K+K');
 Nrest = size(M, 1)-Nint*3*2;
@@ -41,7 +43,7 @@ Fvrel = Trel'*Fv;
 disp('Relative Transformation Done.')
 
 %% HCB To Eliminate Xb
-eliminateXb = false;
+eliminateXb = true;
 if(eliminateXb)    
     
     n_modesCompare = 19;
@@ -56,7 +58,7 @@ if(eliminateXb)
     D_initial2 = sqrt(sort(diag(D_initial2)))/2/pi;
     
     %%%%%%%% Do the Reduction
-    [Mhcb, Khcb, Thcb] = HCBREDUCE(Mrel,Krel,1:MESH.Nn*3,Nrest);
+    [Mhcb, Khcb, Thcb] = HCBREDUCE(Mrel,Krel,1:MESH.Nn*3,Ncomp_final);
     Mrel = 0.5*(Mhcb+Mhcb');  Krel = 0.5*(Khcb+Khcb');
     Rrel = Rrel*Thcb;
     Fvrel = Thcb'*Fvrel;

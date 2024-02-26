@@ -34,7 +34,20 @@ Some folders referenced here may not be publicly available.
 6. Download the mesh details for the model you are using to a new directory named 'MATS' under 'FULLJOINT_ROM_PREPARE'. For members of the Tribomechadynamics lab, meshes can be found [here](https://rice.app.box.com/folder/245530630890). These files should just contain a few items, but it appears that some also contain full M and K matrices that will be ignored for the rest of this process. 
 7. Make a folder under FULLJOINT_ROM_PREPARE named 'ROMS'. Your output model will be put here with the name like 'ROM_U_232ELS.mat' (232 elements with uniform reduction). 
 8. The relative coordinate transformation currently needs to be manually defined. Open your abaqus output (Modelmats.mtx) and check if the bottom or top surface outputs nodes first. Look at comments in the relative coordinate transformation to determine which Trel to use (Xt = top, Xb=bot). Abaqus coordinates = Xrel * [Xt - Xb; Xb; Xinternal]. Failing to do so may flip the sign of the contact model and cause other unknown issues if not fully corrected everywhere.
+9. The variables `HCB_null_space_tol` and `Ncomp_final` can be changed in `FULLJOINT_ROM_PREPARE/prepare_roms_consint.m`. 
+   The former sets a tolerance for eliminating some null space vectors in HCB, which may sometimes be needed to eliminate rigid body modes.
+   To set this value, you stop on debug in the HCBREDUCE.m file and check the ratio of singular values and what tolerance is needed to eliminate
+   the expected 6 rigid body modes.
+   `Ncomp_final` simply sets how many fixed interface modes the final output model should use. This should be checked to achieve convergence.
 8. Run FULLJOINT_ROM_PREPARE/prepare_roms_consint.m
+
+## Relative Coordinate Matrices, Original Mesh
+
+Run `FULLJOINT_ROM_PREPARE/preparemets.m`. Before running you may need to do the following:
+1. Set file path and get Abaqus output formatted as described above for the model reduction runs. 
+2. Set `eliminateXb` to true if you want to eliminate the relative coordinates. Otherwise, set to false.
+3. Set `Ncomp_final` to the desired number of fixed interface modes, if you are eliminating relative coordinates.
+4. You may need to pass an extra argument to the HCB reduction if you have trouble will the illconditioned matrix solve in HCB.
 
 
 ## Code changes
@@ -43,7 +56,6 @@ These are some changes that I have made to the code to get things to run correct
 
 7. Change line 46 to not include a transpose of R. It should be 'R = sparse(R);' You also need to remove the transpose for Fv on the line before. 
 8. The loaded Nodes.dat file contains 3 columns with z coordinates in the last column. However, this code expects only two columns, so that was modified.  
-9. Symmetry is no longer enforced after the null space reduction because enforcing symmetry there was creating negative eigenvalues in M. There may be a deeper issue here. 
 
 
 ## Notes

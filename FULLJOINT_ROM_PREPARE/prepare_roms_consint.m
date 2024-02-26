@@ -6,9 +6,9 @@ addpath('../ROUTINES/GRAPH/')
 
 MEXPATH = '../MATRIX_EXTRACTION/RUNS/';
 SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', ...
-            '5_INTSETNPS', 'HBRB_Baseline', 'HBRB_FewModes'};
+            '5_INTSETNPS', '6_HBRB_Baseline', '7_HBRB_MoreModes'};
 
-setid = 7;  % To call SETDIRS
+setid = 6;  % To call SETDIRS
 
 % ROM levels
 % sel_method = 'P';
@@ -19,6 +19,14 @@ setid = 7;  % To call SETDIRS
 
 % sel_method = 'PD';
 % Nels = 152;  % [48 68 108 152 200 252 292]
+
+%%%%%%% Other Settings:
+% Eliminate singular values lower than this during null space in HCB
+% Specifically if S(i) / S(1) < HCB_null_space_tol
+% Look at HCBREDUCE.m for details
+HCB_null_space_tol = 1e-10; 
+Ncomp_final = 20; % Number of fixed interface modes at final step
+
 
 sel_method = 'U';
 for Nels = [232]
@@ -62,13 +70,13 @@ Trel = sparse([eye(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
                zeros(Nint*3), eye(Nint*3), zeros(Nint*3, Nrest);
                zeros(Nrest, Nint*3*2),     eye(Nrest)]);
 
-disp('HBRB outputs Surfaces in different order')
-if setid >= 6 
-    % HBRB Outputs: Xabaqus = [Xb; Xt; Xi..] = Trel * [Xt-Xb; Xb; Xi..]
-    Trel = sparse([zeros(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
-                   eye(Nint*3),    eye(Nint*3), zeros(Nint*3, Nrest);
-                   zeros(Nrest, Nint*3*2),      eye(Nrest)]);
-end
+% disp('HBRB outputs Surfaces in different order')
+% if setid >= 6 
+%     % HBRB Outputs: Xabaqus = [Xb; Xt; Xi..] = Trel * [Xt-Xb; Xb; Xi..]
+%     Trel = sparse([zeros(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
+%                    eye(Nint*3),    eye(Nint*3), zeros(Nint*3, Nrest);
+%                    zeros(Nrest, Nint*3*2),      eye(Nrest)]);
+% end
 
 Mrel  = Trel'*M*Trel; Mrel = 0.5*(Mrel+Mrel');
 Krel  = Trel'*K*Trel; Krel = 0.5*(Krel+Krel');
@@ -207,7 +215,8 @@ Nrbm = 6;
 % A = diag(D); sqrt(A(1:10))/2/pi
 
 %% HCB Here
-[Mhcb, Khcb, Thcb] = HCBREDUCE(Mred,Kred,1:red.MESH.Nn*3,3*Nrest, true);
+[Mhcb, Khcb, Thcb] = HCBREDUCE(Mred,Kred,1:red.MESH.Nn*3,...
+                                Ncomp_final, HCB_null_space_tol);
 Mhcb = 0.5*(Mhcb+Mhcb');  Khcb = 0.5*(Khcb+Khcb');
 Rhcb = Rred*Thcb;
 Fvhcb = Thcb'*Fvred;
@@ -221,7 +230,7 @@ nrbms = 6;
 Vrbm = [zeros(red.MESH.Nn*3,nrbms); V(:,1:nrbms)];  Vrbm = Vrbm./sqrt(diag(Vrbm'*Mhcb*Vrbm)');
 L = null(Vrbm'*Mhcb);
 
-disp(['Eliminating fixed interface modes with modal frequencies of :', mat2str(sqrt(D)/2/pi)])
+% disp(['Eliminating fixed interface modes with modal frequencies of :', mat2str(sqrt(D)/2/pi)])
 
 % [U, S, V] = svd(L, 'econ');
 % L = U;

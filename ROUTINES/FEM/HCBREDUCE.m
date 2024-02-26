@@ -7,6 +7,11 @@ function [Mr,Kr,TFM] = HCBREDUCE(M,K,bdofs,ncomp, varargin)
 %   M,K		: NdofxNdof mass & stiffness matrices 
 %   bdofs	: Nbx1 set of boundary/retained DOF's
 %   ncomp	: 1x1 Number of fixed boundary modes
+%   varargin{1} : scalar float. Use null space transform in HCB solution to
+%                   eliminate any singular values with S(i)/S(1) < varargin{1}
+%               If not included in input, then no null space transform 
+%               is done for the matrix solution in HCB.
+%               Recommended value based on preliminary tests would be 1e-10
 % OUTPUTS:
 %   Mr,Kr	: (Ndof-Nb)x(Ndof-Nb) Reduced mass & stiffness
 %   		  matrices
@@ -33,11 +38,11 @@ function [Mr,Kr,TFM] = HCBREDUCE(M,K,bdofs,ncomp, varargin)
 %         L = null(Vii(:, 1:varargin{1})');
 
         % Previous algorithm
-        L = null( null(full(Kii))' );
+%         L = null( null(full(Kii))' );
 
         % Manual null space in one SVD call
         [U, S, V] = svd(full(Kii)); % Kii = U * S * V'
-        num_drop = sum(diag(S) / S(1,1) < 1e-10);
+        num_drop = sum(diag(S) / S(1,1) < varargin{1});
         
         L = V(:, 1:end-num_drop); % Columns of V are a basis for X in Kii*X
 
