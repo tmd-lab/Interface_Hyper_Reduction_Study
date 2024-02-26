@@ -158,53 +158,53 @@ Nrbm = 6;
 % solution, but then the null space may be able to correctly eliminate 6
 % RBMs and leave 1 for the separating (null space code here eliminates
 % negative so is not perfect, but close).
-[MhcbRel, KhcbRel, ThcbRel] = HCBREDUCE(Mrel,Krel,1:3*Nint,Nb_rom, true); 
-MhcbRel = 0.5*(MhcbRel+MhcbRel');  KhcbRel = 0.5*(KhcbRel+KhcbRel');
-
-disp('Verify Stuck modes:')
-[V, D] = eigs(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
-sqrt(diag(D))/2/pi
-
-[V, D] = eig(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end));
-A = diag(D); sqrt(A(1:10))/2/pi
-
-
-disp('Verify full modes:')
-[V, D] = eigs(KhcbRel, MhcbRel, 10, 'SM');
-sqrt(diag(D))/2/pi
-
-disp('Verify Null of Full Modes')
-
-disp('VERY HACKY NULL SPACE!')
-Linds = [1:3*Nint, 3*Nint+((Nrbm+1):Nb_rom)];
-
-MRel_HCB_Null = MhcbRel(Linds, Linds);
-KRel_HCB_Null = KhcbRel(Linds, Linds);
-
-MRel_HCB_Null = 0.5*(MRel_HCB_Null+MRel_HCB_Null');  
-KRel_HCB_Null = 0.5*(KRel_HCB_Null+KRel_HCB_Null');
-
-% This shows 4 zero energy modes, when it should show one based on my
-% understanding.
-[V, D] = eigs(KRel_HCB_Null, MRel_HCB_Null, 10, 'SM');
-sqrt(diag(D))/2/pi
-
-disp('Full Modes of Null Reduced: - THESE HAVE CHANGED AND NOW LOOK WRONG!')
-[V, D] = eig(KRel_HCB_Null, MRel_HCB_Null);
-A = diag(D); sqrt(A(1:10))/2/pi
-
-disp('Verify fixed modes of Null model') % These are good. - no zero eigenvalues
-[V, D] = eigs(KRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), MRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
-sqrt(diag(D))/2/pi
-
-disp('Fundamental problem, KRel_HCB is not P.S.D')
-[V, D] = eig(KRel_HCB_Null);
-A = diag(D); sqrt(A(1:10))/2/pi
-
-
-disp('Double Check that M is P.D.')
-[V, D] = eig(MRel_HCB_Null);
-A = diag(D); sqrt(A(1:10))/2/pi
+% [MhcbRel, KhcbRel, ThcbRel] = HCBREDUCE(Mrel,Krel,1:3*Nint,Nb_rom, true); 
+% MhcbRel = 0.5*(MhcbRel+MhcbRel');  KhcbRel = 0.5*(KhcbRel+KhcbRel');
+% 
+% disp('Verify Stuck modes:')
+% [V, D] = eigs(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
+% sqrt(diag(D))/2/pi
+% 
+% [V, D] = eig(KhcbRel(Nint*3+1:end,Nint*3+1:end), MhcbRel(Nint*3+1:end,Nint*3+1:end));
+% A = diag(D); sqrt(A(1:10))/2/pi
+% 
+% 
+% disp('Verify full modes:')
+% [V, D] = eigs(KhcbRel, MhcbRel, 10, 'SM');
+% sqrt(diag(D))/2/pi
+% 
+% disp('Verify Null of Full Modes')
+% 
+% disp('VERY HACKY NULL SPACE!')
+% Linds = [1:3*Nint, 3*Nint+((Nrbm+1):Nb_rom)];
+% 
+% MRel_HCB_Null = MhcbRel(Linds, Linds);
+% KRel_HCB_Null = KhcbRel(Linds, Linds);
+% 
+% MRel_HCB_Null = 0.5*(MRel_HCB_Null+MRel_HCB_Null');  
+% KRel_HCB_Null = 0.5*(KRel_HCB_Null+KRel_HCB_Null');
+% 
+% % This shows 4 zero energy modes, when it should show one based on my
+% % understanding.
+% [V, D] = eigs(KRel_HCB_Null, MRel_HCB_Null, 10, 'SM');
+% sqrt(diag(D))/2/pi
+% 
+% disp('Full Modes of Null Reduced: - THESE HAVE CHANGED AND NOW LOOK WRONG!')
+% [V, D] = eig(KRel_HCB_Null, MRel_HCB_Null);
+% A = diag(D); sqrt(A(1:10))/2/pi
+% 
+% disp('Verify fixed modes of Null model') % These are good. - no zero eigenvalues
+% [V, D] = eigs(KRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), MRel_HCB_Null(Nint*3+1:end,Nint*3+1:end), 10, 'SM');
+% sqrt(diag(D))/2/pi
+% 
+% disp('Fundamental problem, KRel_HCB is not P.S.D')
+% [V, D] = eig(KRel_HCB_Null);
+% A = diag(D); sqrt(A(1:10))/2/pi
+% 
+% 
+% disp('Double Check that M is P.D.')
+% [V, D] = eig(MRel_HCB_Null);
+% A = diag(D); sqrt(A(1:10))/2/pi
 
 %% HCB Here
 [Mhcb, Khcb, Thcb] = HCBREDUCE(Mred,Kred,1:red.MESH.Nn*3,3*Nrest, true);
@@ -223,26 +223,27 @@ L = null(Vrbm'*Mhcb);
 
 disp(['Eliminating fixed interface modes with modal frequencies of :', mat2str(sqrt(D)/2/pi)])
 
-[U, S, V] = svd(L, 'econ');
-L = U;
+% [U, S, V] = svd(L, 'econ');
+% L = U;
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%
 % % Alternative L with Gram-Schmidt 
 % disp('Using alternative L, this has not been well tested.')
 % tmp = eye(size(V, 1));
 % ModeToOrtho = [V(:, 1:nrbms), tmp(:, nrbms+1:end)];
+% ModeToOrtho = [zeros(3*red.MESH.Nn, size(ModeToOrtho, 2)); ModeToOrtho];
 % 
 % for col_curr = 2:size(ModeToOrtho, 2)
 %     for col_sub = 1:(col_curr-1)
-%         tmp = (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_curr)) / (ModeToOrtho(:, col_sub)'* ModeToOrtho(:, col_sub));
+%         tmp = (ModeToOrtho(:, col_sub)'*Mhcb* ModeToOrtho(:, col_curr)) / (ModeToOrtho(:, col_sub)'*Mhcb* ModeToOrtho(:, col_sub));
 %         ModeToOrtho(:, col_curr) = ModeToOrtho(:, col_curr) - tmp * ModeToOrtho(:, col_sub);
 %     end
 % end
 % 
 % ModeNull = ModeToOrtho(:, nrbms+1:end);
 % 
-% L = [eye(red.MESH.Nn*3), zeros(red.MESH.Nn*3, size(ModeNull, 2));
-%      zeros(size(ModeNull, 1), red.MESH.Nn*3), ModeNull];
+% L = [[eye(red.MESH.Nn*3) ;
+%      zeros(size(ModeNull, 1)- 3*red.MESH.Nn, red.MESH.Nn*3)], ModeToOrtho];
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

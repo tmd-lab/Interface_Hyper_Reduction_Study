@@ -23,6 +23,10 @@ Some folders referenced here may not be publicly available.
 # Steps to Generate Reduced Mesh
 
 1. You will first need to generate a set of matrices describing the system without model reduction. A tutorial on how to do that has been published [here](https://nidish96.github.io/Abaqus4Joints/). This description assumes that coordinates are exported for both sides of the interface. The tutorial may be updated to where that is no longer needed. 
+   As of writing this, the tutorial produces input decks that list the wrong order outputs for the preserved top and bottom nodes. 
+   Check your output files and verify that the top node numbers are output first. 
+   If not, switch the order of the preserved node sets in the model reduction and rerun the Abaqus simulation.
+   If this is correct, it should eliminate the need to update the relative coordinates in step 8 below.
 2. Clone this repository. 
 3. Copy your .mat file from Abaqus into the folder './MATRIX_EXTRACTION/RUNS/[SUBFOLDER_NAME]' where '[SUBFOLDER_NAME]' is a subfolder that you create. Copy this subfolder name into the variable list 'SETDIRS' on line 8 of 'FULLJOINT_ROM_PREPARE/prepare_roms_consint.m' Rename your mat file to be called 'BRB_WOPRES_MAT.mat' (WOPRES = Without Prestress). You will also need to copy Elements.dat and Nodes.dat from the Abaqus procedure to this same folder. 
 4. Set the variable 'setid' in FULLJOINT_ROM_PREPARE/prepare_roms_consint.m to select the index of SETDIRS corresponding to your folder. 
