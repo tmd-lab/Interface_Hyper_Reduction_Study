@@ -6,9 +6,9 @@ addpath('../ROUTINES/GRAPH/')
 
 MEXPATH = '../MATRIX_EXTRACTION/RUNS/';
 SETDIRS = {'1_AROUNDSET', '2_ABOVESET', '3_SINGELEMABOVESET', '4_INTSET', ...
-            '5_INTSETNPS', '6_HBRB_Baseline', '7_HBRB_MoreModes'};
+            '5_INTSETNPS', '6_HBRB_Baseline', '7_HBRB_MoreModes', '7_50MODES'};
 
-setid = 6;  % To call SETDIRS
+setid = 8;  % To call SETDIRS
 
 % ROM levels
 % sel_method = 'P';
@@ -29,7 +29,7 @@ Ncomp_final = 20; % Number of fixed interface modes at final step
 
 
 sel_method = 'U';
-for Nels = [232]
+for Nels = [588]
 % % FRICTMODEL STUDY
 % sel_method = 'PD';
 % Nels = 68;
@@ -77,6 +77,16 @@ Trel = sparse([eye(Nint*3),  eye(Nint*3), zeros(Nint*3, Nrest);
 %                    eye(Nint*3),    eye(Nint*3), zeros(Nint*3, Nrest);
 %                    zeros(Nrest, Nint*3*2),      eye(Nrest)]);
 % end
+
+if size(R, 1) == size(Trel, 1)
+    R = R';
+    warning('Transposed R for assuming that sizes should match.')
+end
+
+if size(Fv, 2) == size(Trel, 1)
+    Fv = Fv';
+    warning('Transposed Fv for assuming that sizes should match.')
+end
 
 Mrel  = Trel'*M*Trel; Mrel = 0.5*(Mrel+Mrel');
 Krel  = Trel'*K*Trel; Krel = 0.5*(Krel+Krel');
