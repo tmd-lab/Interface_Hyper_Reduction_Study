@@ -19,6 +19,8 @@ This code is a fork of that project code for continued use by the Tribomechadyna
 Some additional documentation will be provided here on how to utilize the hyper-reduction code. 
 Some folders referenced here may not be publicly available. 
 
+Further development is needed to separate methods for doing hyper reduction from specific examples made with edits here.
+
 
 # Steps to Generate Reduced Mesh
 
